@@ -1,0 +1,11 @@
+medida,valor
+casos igual,1688
+casos igual / microsoft:windows_server_2016,514
+casos igual / microsoft:windows_server_2019,575
+casos igual / microsoft:windows_server_2022,599
+casos solo_contencion dentro de la muestra,0
+nombre (cualquier caso): Windows Server 2022,599
+nombre (cualquier caso): Windows Server 2019,575
+nombre (cualquier caso): Windows Server 2019 (Server Core installation),575
+nombre (cualquier caso): Windows Server 2016,514
+nombre (cualquier caso): Windows Server 2016 (Server Core installation),514

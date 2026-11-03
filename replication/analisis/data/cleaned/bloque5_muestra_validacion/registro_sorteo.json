@@ -1,0 +1,32 @@
+{
+  "fecha_sorteo": "2026-10-04",
+  "semilla": 20261004,
+  "n_muestra_inferencia": 65,
+  "minimo_por_estrato": 2,
+  "foto_nvd": "configs_vulnerable_20261003.csv",
+  "sha256_universo_inferencia": "72328a36ee5189bc5025ff54d31b7200f1a68bd489feb2ce327bb124578080d0",
+  "inferencia": {
+    "pares_persistidos": 3424,
+    "casos_distintos": 2025,
+    "vulnerabilidades": 947,
+    "casos_conocidos_excluidos": 7,
+    "pares_conocidos_excluidos": 7,
+    "casos_sorteables": 2018,
+    "estratos": 11,
+    "efecto_de_diseno": 1.195,
+    "tamano_efectivo": 54.4,
+    "margen_peor_caso_95": 0.131
+  },
+  "formal": {
+    "pares_persistidos": 459,
+    "por_clase_pares": {
+      "producto_afectado": 357,
+      "sin_coincidencia_hoy": 20,
+      "solo_plataforma": 82
+    },
+    "censo_vulnerabilidades": 60,
+    "censo_pares": 377,
+    "censo_sin_dato_nvd_vulnerabilidades": 10
+  },
+  "filas_planilla": 125
+}

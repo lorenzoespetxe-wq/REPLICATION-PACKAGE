@@ -1,0 +1,8 @@
+medida,valor
+pares declarados afectados al cierre,5810
+vulnerabilidades declaradas afectadas al cierre,924
+pares que la inferencia no habria encontrado,2268
+vulnerabilidades con algun par no encontrado,567
+vulnerabilidades sin ningun par encontrado,11
+pares no encontrados: windows_10_22h2 / producto_no_coincide,2268
+pares no encontrados que con los nombres del 02/10 si se encontrarian,0

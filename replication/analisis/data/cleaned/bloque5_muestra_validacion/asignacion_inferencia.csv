@@ -1,0 +1,12 @@
+estrato,casos_universo,pares_universo,casos_muestra,peso_caso
+apple:macos,225,450,7,32.1429
+atlassian:confluence,2,2,2,1.0
+elastic:elasticsearch,4,4,2,2.0
+exim:exim,4,4,2,2.0
+gitlab:gitlab,33,33,3,11.0
+jenkins:jenkins,53,53,3,17.6667
+microsoft:windows_server_2016,514,514,13,39.5385
+microsoft:windows_server_2019,575,1150,15,38.3333
+microsoft:windows_server_2022,599,1198,15,39.9333
+nodejs:node.js,1,1,1,1.0
+openvpn:openvpn,8,8,2,4.0

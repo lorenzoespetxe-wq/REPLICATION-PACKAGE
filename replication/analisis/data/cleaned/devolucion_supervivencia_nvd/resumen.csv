@@ -1,0 +1,34 @@
+medida,valor
+vulnerabilidades,1018
+con configuracion (evento),969
+censuradas al 03/10,49
+seguimiento minimo (dias),9.68
+seguimiento maximo (dias),32.56
+percentil 25 Kaplan-Meier (dias),2.6
+percentil 50 Kaplan-Meier (dias),7.97
+percentil 75 Kaplan-Meier (dias),14.06
+percentil 90 Kaplan-Meier (dias),20.08
+"a 3 dias: sobre las 1.018, sin tratar censura (%)",29.7
+a 3 dias: Kaplan-Meier (%),29.7
+a 3 dias: solo con seguimiento completo (n),1018
+a 3 dias: solo con seguimiento completo (%),29.7
+"a 5 dias: sobre las 1.018, sin tratar censura (%)",38.4
+a 5 dias: Kaplan-Meier (%),38.4
+a 5 dias: solo con seguimiento completo (n),1018
+a 5 dias: solo con seguimiento completo (%),38.4
+"a 7 dias: sobre las 1.018, sin tratar censura (%)",45.1
+a 7 dias: Kaplan-Meier (%),45.1
+a 7 dias: solo con seguimiento completo (n),1018
+a 7 dias: solo con seguimiento completo (%),45.1
+"a 10 dias: sobre las 1.018, sin tratar censura (%)",61.9
+a 10 dias: Kaplan-Meier (%),61.9
+a 10 dias: solo con seguimiento completo (n),1011
+a 10 dias: solo con seguimiento completo (%),61.6
+"a 14 dias: sobre las 1.018, sin tratar censura (%)",73.6
+a 14 dias: Kaplan-Meier (%),73.6
+a 14 dias: solo con seguimiento completo (n),1007
+a 14 dias: solo con seguimiento completo (%),73.3
+"a 21 dias: sobre las 1.018, sin tratar censura (%)",91.6
+a 21 dias: Kaplan-Meier (%),92.1
+a 21 dias: solo con seguimiento completo (n),747
+a 21 dias: solo con seguimiento completo (%),90.4

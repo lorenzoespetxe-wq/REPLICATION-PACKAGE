@@ -1,0 +1,34 @@
+medida,unidad,valor,script
+vulnerabilidades correlacionadas en la campana,vulnerabilidades,1018,bloque12b_latencia_deteccion.py:117
+dato de la NVD: primera_corrida,vulnerabilidades,47,bloque12b_latencia_deteccion.py:120
+dato de la NVD: primera_corrida (%),% de vulnerabilidades,4.6,bloque12b_latencia_deteccion.py:121
+dato de la NVD: dentro_de_la_ventana,vulnerabilidades,134,bloque12b_latencia_deteccion.py:120
+dato de la NVD: dentro_de_la_ventana (%),% de vulnerabilidades,13.2,bloque12b_latencia_deteccion.py:121
+"dentro de la ventana: dias de la publicacion a la primera corrida con dato (min, mediana, max)",dias,"(1.7, 1.8, 2.7)",bloque12b_latencia_deteccion.py:123
+dato de la NVD: despues_de_la_ventana,vulnerabilidades,788,bloque12b_latencia_deteccion.py:120
+dato de la NVD: despues_de_la_ventana (%),% de vulnerabilidades,77.4,bloque12b_latencia_deteccion.py:121
+"despues de la ventana: cota inferior (ultima corrida sin dato) (min, mediana, max)",dias,"(1.7, 1.9, 2.7)",bloque12b_latencia_deteccion.py:126
+"despues de la ventana: cota superior (ultima modificacion al 3/10) (min, mediana, max)",dias,"(1.8, 16.2, 22.8)",bloque12b_latencia_deteccion.py:128
+dato de la NVD: sin_dato_al_3_10,vulnerabilidades,49,bloque12b_latencia_deteccion.py:120
+dato de la NVD: sin_dato_al_3_10 (%),% de vulnerabilidades,4.8,bloque12b_latencia_deteccion.py:121
+"sin dato: dias desde la publicacion al 3/10 (min, mediana, max)",dias,"(16.4, 30.3, 31.9)",bloque12b_latencia_deteccion.py:131
+via inferencia: vulnerabilidades detectadas,vulnerabilidades,935,bloque12b_latencia_deteccion.py:137
+via inferencia: detectadas en la primera corrida posterior a la publicacion,vulnerabilidades,935,bloque12b_latencia_deteccion.py:138
+via inferencia: detectadas en una corrida posterior,vulnerabilidades,0,bloque12b_latencia_deteccion.py:139
+"via inferencia: horas de la publicacion a la deteccion (min, mediana, max)",horas,"(0.7, 27.0, 37.7)",bloque12b_latencia_deteccion.py:140
+via formal: vulnerabilidades detectadas,vulnerabilidades,91,bloque12b_latencia_deteccion.py:137
+via formal: detectadas en la primera corrida posterior a la publicacion,vulnerabilidades,47,bloque12b_latencia_deteccion.py:138
+via formal: detectadas en una corrida posterior,vulnerabilidades,44,bloque12b_latencia_deteccion.py:139
+"via formal: horas de la publicacion a la deteccion (min, mediana, max)",horas,"(20.0, 27.0, 63.7)",bloque12b_latencia_deteccion.py:140
+"via formal: horas hasta la deteccion de las detectadas en una corrida posterior (min, mediana, max)",horas,"(39.7, 43.7, 63.7)",bloque12b_latencia_deteccion.py:144
+procesamiento: corridas con pares nuevos (posteriores al control de ritmo),corridas,9,bloque12b_latencia_deteccion.py:162
+procesamiento: corridas posteriores al control de ritmo sin pares nuevos,corridas,8,bloque12b_latencia_deteccion.py:163
+"procesamiento: segundos por par correlacionado, corridas de 100 pares o mas (min, mediana, max)",segundos,"(0.15, 0.16, 0.2)",bloque12b_latencia_deteccion.py:165
+brechas entre corridas: menos de 23 horas,brechas,4,bloque12b_latencia_deteccion.py:175
+"brechas entre corridas: menos de 23 horas (min, max)",horas,"(15.56, 22.69)",bloque12b_latencia_deteccion.py:177
+brechas entre corridas: entre 23 y 25 horas,brechas,17,bloque12b_latencia_deteccion.py:175
+"brechas entre corridas: entre 23 y 25 horas (min, max)",horas,"(23.11, 24.8)",bloque12b_latencia_deteccion.py:177
+brechas entre corridas: entre 25 y 26 horas,brechas,0,bloque12b_latencia_deteccion.py:175
+brechas entre corridas: mas de 26 horas,brechas,5,bloque12b_latencia_deteccion.py:175
+"brechas entre corridas: mas de 26 horas (min, max)",horas,"(26.18, 48.0)",bloque12b_latencia_deteccion.py:177
+"brechas desde la corrida del 13/09 (cantidad, min, max)",horas,"(13, 23.61, 24.38)",bloque12b_latencia_deteccion.py:179

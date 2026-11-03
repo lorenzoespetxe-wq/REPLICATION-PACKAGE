@@ -1,0 +1,13 @@
+producto,casos_universo,revisados,errores,tipos_error
+microsoft:windows_server_2022,599,15,0,
+microsoft:windows_server_2019,575,15,0,
+microsoft:windows_server_2016,514,13,0,
+apple:macos,225,7,0,
+jenkins:jenkins,53,3,2,complemento
+gitlab:gitlab,33,3,2,ceguera de version
+openvpn:openvpn,8,2,0,
+cisco:ios,7,7,7,coincidencia parcial de nombre
+elastic:elasticsearch,4,2,0,
+exim:exim,4,2,0,
+atlassian:confluence,2,2,1,ceguera de version
+nodejs:node.js,1,1,0,

@@ -1,0 +1,13 @@
+medida,unidad,valor
+pares del contraste,pares,3883
+vulnerabilidades del contraste,vulnerabilidades,1040
+pares notificados por el indice,pares,17
+"al detectar: vulnerabilidades con probabilidad >= 0,04",vulnerabilidades,0
+al detectar: pares que dispararia la regla,pares,0
+al detectar: pares que dispararia y el indice no notifico,pares,0
+"al cierre: vulnerabilidades con probabilidad >= 0,04",vulnerabilidades,1
+al cierre: pares que dispararia la regla,pares,1
+al cierre: pares que dispararia y el indice no notifico,pares,0
+serie diaria: vulnerabilidades con serie,vulnerabilidades,1040
+serie diaria: pares que habrian cambiado de prioridad algun dia posterior a la deteccion,pares,1
+"serie diaria: vulnerabilidades que cruzaron 0,04 algun dia",vulnerabilidades,1

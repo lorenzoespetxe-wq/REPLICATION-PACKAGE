@@ -1,0 +1,36 @@
+medida,unidad,valor
+vulnerabilidades,vulnerabilidades,1040
+"probabilidad: sin dato al detectar, con dato al cierre",vulnerabilidades,61
+"probabilidad: sin dato al detectar, mediana al cierre",probabilidad,0.0036
+"probabilidad: con dato, sube",vulnerabilidades,651
+"probabilidad: con dato, baja",vulnerabilidades,223
+"probabilidad: con dato, no cambia",vulnerabilidades,105
+probabilidad: sube contando las dos maneras,vulnerabilidades,712
+probabilidad: mediana al detectar (todas),probabilidad,0.0029
+probabilidad: mediana al cierre (todas),probabilidad,0.0033
+"probabilidad: suben mas de 0,01",vulnerabilidades,4
+"probabilidad: 0,04 o mas al cierre",vulnerabilidades,1
+catalogo de explotadas: vulnerabilidades,vulnerabilidades,2
+catalogo CVE-2026-85706: pares,,1
+catalogo CVE-2026-85706: ingreso_catalogo,,2026-09-11
+catalogo CVE-2026-85706: publicacion,,2026-09-12 03:16:30.473
+catalogo CVE-2026-85706: deteccion,,2026-09-13 17:00:27.224
+catalogo CVE-2026-85706: prob_detectar,,0.0116
+catalogo CVE-2026-85706: prob_cierre,,0.9296
+catalogo CVE-2026-85880: pares,,9
+catalogo CVE-2026-85880: ingreso_catalogo,,2026-09-08
+catalogo CVE-2026-85880: publicacion,,2026-09-08 18:21:14.087
+catalogo CVE-2026-85880: deteccion,,2026-09-09 21:17:55.791
+catalogo CVE-2026-85880: prob_detectar,,0.0057
+catalogo CVE-2026-85880: prob_cierre,,0.0362
+"indice sube mas de 0,05",pares,387
+"  de ellos, ingeridos sin severidad",pares,386
+"  de ellos, con severidad al ingerir",pares,1
+ingeridos sin severidad: cambio medio del indice,indice,0.0949
+CVE-2026-85706: fecha_publicacion_nvd,,2026-09-12 03:16:30.473
+CVE-2026-85706: fecha_ingesta_pipeline,,2026-09-13 17:00:27.224
+CVE-2026-85706: epss_score,,0.0116
+CVE-2026-85706: epss_score_final,,0.9296
+CVE-2026-85706: irc_score,,0.5529
+CVE-2026-85706: irc_score_final,,0.7824
+CVE-2026-85706: prioridad,,ALTA

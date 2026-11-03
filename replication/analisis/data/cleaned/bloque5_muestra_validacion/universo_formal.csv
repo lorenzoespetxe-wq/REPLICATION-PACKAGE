@@ -1,0 +1,102 @@
+cve_id,clase_nvd_hoy,pares,activos,productos,estado_nvd
+CVE-2026-69266,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69297,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69342,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69405,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69412,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69415,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69497,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69510,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69620,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69637,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-69679,producto_afectado,5,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01,microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-77503,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-78447,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-78508,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-78516,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Modified
+CVE-2026-79001,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79012,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79041,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79064,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79069,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79091,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79128,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79140,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79150,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79284,sin_coincidencia_hoy,2,ws-mkt-01 ws-mkt-02,apple:macos,
+CVE-2026-79907,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-79908,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-79909,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-79910,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-80075,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-80093,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-80096,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-80159,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-80160,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-80161,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-80162,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81354,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-81973,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81975,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81976,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81977,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81978,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81979,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81980,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81981,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81982,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81983,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81984,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81985,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81986,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81987,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81988,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81989,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81990,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81991,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81992,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81993,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81994,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81996,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-81997,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-82001,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-83940,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-83942,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-83954,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83955,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83967,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83968,producto_afectado,4,ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2,Analyzed
+CVE-2026-83969,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83970,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83971,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83972,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83974,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83975,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83976,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83977,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83978,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83979,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83980,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83981,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83982,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83985,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83986,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83987,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83989,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83991,producto_afectado,8,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83992,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83995,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83996,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-83997,producto_afectado,6,srv-ad-01 srv-ad-02 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2022,Analyzed
+CVE-2026-84001,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-85360,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-85880,producto_afectado,9,srv-ad-01 srv-ad-02 srv-fs-01 srv-fs-02 srv-print-01 ws-finance-01 ws-finance-02 ws-hr-01 ws-hr-02,microsoft:windows_10_22h2 microsoft:windows_server_2016 microsoft:windows_server_2019 microsoft:windows_server_2022,Analyzed
+CVE-2026-87452,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87470,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87535,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87546,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Modified
+CVE-2026-87558,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87562,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87607,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-87637,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed
+CVE-2026-91712,solo_plataforma,2,ws-mkt-01 ws-mkt-02,apple:macos,Analyzed

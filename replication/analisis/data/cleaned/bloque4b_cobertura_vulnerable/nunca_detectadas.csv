@@ -1,0 +1,65 @@
+regla,cve_id,activos,solo_plataforma
+artefacto,CVE-2026-14470,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-17621,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-17622,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-17627,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-17631,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19298,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19299,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19300,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19301,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19302,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19303,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19304,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19305,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-19306,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-34689,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-48361,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-58599,srv-ad-01 srv-ad-02 ws-dev-03 srv-fs-01 srv-fs-02 ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,True
+artefacto,CVE-2026-58600,srv-ad-01 srv-ad-02 ws-dev-03 srv-fs-01 srv-fs-02 ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,True
+artefacto,CVE-2026-69467,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69649,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,True
+artefacto,CVE-2026-69710,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69725,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69784,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69799,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69820,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69864,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-69900,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-70578,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-70579,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+artefacto,CVE-2026-75631,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75649,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75682,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75684,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75686,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75689,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75697,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75698,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75771,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75862,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-75863,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-76191,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-76199,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-81352,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,True
+artefacto,CVE-2026-82005,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-82006,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-82007,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-83964,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-8447,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-87627,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-9138,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-91727,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-91744,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-91748,ws-mkt-01 ws-mkt-02,True
+artefacto,CVE-2026-9186,ws-mkt-01 ws-mkt-02,True
+vulnerable,CVE-2026-69467,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69710,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69725,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69784,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69799,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69820,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69864,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-69900,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-70578,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False
+vulnerable,CVE-2026-70579,ws-hr-01 ws-hr-02 ws-finance-01 ws-finance-02,False

@@ -1,0 +1,2 @@
+cve_id,activo_id,dia_deteccion,prioridad_al_detectar,primer_dia_de_cambio,prioridad_nueva,indice_ese_dia,probabilidad_ese_dia
+CVE-2026-85706,16,2026-09-13,ALTA,2026-09-25,CRITICA,0.7786,0.91425

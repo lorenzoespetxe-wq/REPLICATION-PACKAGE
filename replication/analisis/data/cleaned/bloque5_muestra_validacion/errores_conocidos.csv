@@ -1,0 +1,59 @@
+via,motivo,cve_id,pares,activos,productos
+formal,sin_coincidencia_hoy,CVE-2026-79001,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79012,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79041,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79064,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79069,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79091,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79128,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79140,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79150,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,sin_coincidencia_hoy,CVE-2026-79284,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-79907,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-79908,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-79909,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-79910,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-80159,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-80160,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-80161,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-80162,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81973,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81975,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81976,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81977,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81978,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81979,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81980,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81981,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81982,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81983,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81984,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81985,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81986,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81987,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81988,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81989,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81990,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81991,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81992,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81993,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81994,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81996,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-81997,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-82001,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87452,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87470,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87535,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87546,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87558,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87562,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87607,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-87637,2,ws-mkt-01 ws-mkt-02,apple:macos
+formal,solo_plataforma,CVE-2026-91712,2,ws-mkt-01 ws-mkt-02,apple:macos
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20274,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20275,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20276,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20277,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20278,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20279,1,fw-edge-01,cisco:ios
+inferencia,falso_positivo_confirmado_firewall,CVE-2026-20280,1,fw-edge-01,cisco:ios

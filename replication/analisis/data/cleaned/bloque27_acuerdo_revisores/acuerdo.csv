@@ -1,0 +1,13 @@
+medida,valor
+casos,65
+coinciden en categoria,64
+coinciden con veredicto firme (sin dudoso),61
+acuerdo observado,0.9846
+acuerdo esperado por azar,0.7522
+kappa de Cohen,0.9379
+revisor: correcto,56
+revisor: error,5
+revisor: dudoso,4
+previa: correcto,56
+previa: error,6
+previa: dudoso,3

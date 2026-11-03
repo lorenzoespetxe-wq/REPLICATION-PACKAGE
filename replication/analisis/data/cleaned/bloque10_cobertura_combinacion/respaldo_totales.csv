@@ -1,0 +1,3 @@
+pares,detectar_con,detectar_sin,cierre_con,cierre_sin,regla,vuln_detectar_con,vuln_cierre_con
+3848,656,3192,3780,68,artefacto,181,955
+3848,574,3274,3698,150,vulnerable,140,914

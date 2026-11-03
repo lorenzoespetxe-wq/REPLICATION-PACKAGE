@@ -1,0 +1,8 @@
+medida,unidad,valor,script
+vulnerabilidades que salieron de la ventana sin configuracion,vulnerabilidades,788,bloque28c_salida_ventana.py
+publicadas antes de la hora de la corrida (tres corridas),vulnerabilidades,39,bloque28c_salida_ventana.py
+publicadas despues de la hora de la corrida (dos corridas),vulnerabilidades,749,bloque28c_salida_ventana.py
+fuera del tramo de su hora de publicacion (corrida manual del 2/09),vulnerabilidades,1,bloque28c_salida_ventana.py
+"salida de la ventana, minimo",horas desde la publicacion,41.7,bloque28c_salida_ventana.py
+"salida de la ventana, mediana",horas desde la publicacion,46.8,bloque28c_salida_ventana.py
+"salida de la ventana, maximo",horas desde la publicacion,64.7,bloque28c_salida_ventana.py

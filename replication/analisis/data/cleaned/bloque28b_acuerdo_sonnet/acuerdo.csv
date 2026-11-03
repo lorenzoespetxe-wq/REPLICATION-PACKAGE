@@ -1,0 +1,7 @@
+comparacion,coinciden,acuerdo_observado,acuerdo_esperado,kappa
+sonnet (R1) vs juicio final,20,0.3077,0.2201,0.1123
+sonnet (R1) vs revision 04/10,19,0.2923,0.2476,0.0595
+sonnet (R1) vs propuesta previa,20,0.3077,0.2386,0.0908
+sonnet (WS correcto) vs juicio final,63,0.9692,0.8308,0.8182
+sonnet (WS correcto) vs revision 04/10,62,0.9538,0.7768,0.7932
+sonnet (WS correcto) vs propuesta previa,63,0.9692,0.778,0.8614

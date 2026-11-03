@@ -1,0 +1,5 @@
+medida,vulnerabilidades,pares,vuln_pct,pares_pct
+correlaciones del artefacto en la campana,1018,3848,100.0,100.0
+via formal con el dato publicado al ingerir,181,656,17.8,17.0
+no alcanzadas por la via formal al ingerir,837,3192,82.2,83.0
+sin coincidencia formal en la foto del cierre,63,68,6.2,1.8

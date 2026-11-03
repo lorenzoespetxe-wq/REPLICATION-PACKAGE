@@ -1,0 +1,44 @@
+medida,unidad,valor,script
+vulnerabilidades consultadas al historial de la NVD,vulnerabilidades,922,bloque12b_fecha_configuracion.py:133
+con fecha de alta de la configuracion,vulnerabilidades,922,bloque12b_fecha_configuracion.py:134
+sin fecha de alta de la configuracion,vulnerabilidades,0,bloque12b_fecha_configuracion.py:135
+fecha dentro de las cotas del bloque 12B,vulnerabilidades,922,bloque12b_fecha_configuracion.py:136
+fecha fuera de las cotas del bloque 12B,vulnerabilidades,0,bloque12b_fecha_configuracion.py:137
+alta de la configuracion en el evento Initial Analysis,vulnerabilidades,922,bloque12b_fecha_configuracion.py:138
+con alguna anomalia anotada,vulnerabilidades,0,bloque12b_fecha_configuracion.py:140
+total: vulnerabilidades con fecha,vulnerabilidades,922,bloque12b_fecha_configuracion.py:142
+total: dias de la publicacion al alta de la configuracion (min),dias,0.84,bloque12b_fecha_configuracion.py:145
+total: dias de la publicacion al alta de la configuracion (p25),dias,2.81,bloque12b_fecha_configuracion.py:145
+total: dias de la publicacion al alta de la configuracion (mediana),dias,7.97,bloque12b_fecha_configuracion.py:145
+total: dias de la publicacion al alta de la configuracion (p75),dias,13.95,bloque12b_fecha_configuracion.py:145
+total: dias de la publicacion al alta de la configuracion (p90),dias,16.76,bloque12b_fecha_configuracion.py:145
+total: dias de la publicacion al alta de la configuracion (max),dias,22.77,bloque12b_fecha_configuracion.py:145
+total: fuera de las cotas del bloque 12B,vulnerabilidades,0,bloque12b_fecha_configuracion.py:146
+dentro_de_la_ventana: vulnerabilidades con fecha,vulnerabilidades,134,bloque12b_fecha_configuracion.py:142
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (min),dias,0.84,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (p25),dias,0.96,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (mediana),dias,1.71,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (p75),dias,1.76,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (p90),dias,1.8,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: dias de la publicacion al alta de la configuracion (max),dias,2.46,bloque12b_fecha_configuracion.py:145
+dentro_de_la_ventana: fuera de las cotas del bloque 12B,vulnerabilidades,0,bloque12b_fecha_configuracion.py:146
+despues_de_la_ventana: vulnerabilidades con fecha,vulnerabilidades,788,bloque12b_fecha_configuracion.py:142
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (min),dias,1.83,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (p25),dias,3.93,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (mediana),dias,8.9,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (p75),dias,14.07,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (p90),dias,17.77,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: dias de la publicacion al alta de la configuracion (max),dias,22.77,bloque12b_fecha_configuracion.py:145
+despues_de_la_ventana: fuera de las cotas del bloque 12B,vulnerabilidades,0,bloque12b_fecha_configuracion.py:146
+correlacionadas con configuracion a los 3 dias de publicadas,vulnerabilidades,302,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 3 dias de publicadas (%),% de 1.018,29.7,bloque12b_fecha_configuracion.py:157
+correlacionadas con configuracion a los 5 dias de publicadas,vulnerabilidades,391,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 5 dias de publicadas (%),% de 1.018,38.4,bloque12b_fecha_configuracion.py:157
+correlacionadas con configuracion a los 7 dias de publicadas,vulnerabilidades,459,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 7 dias de publicadas (%),% de 1.018,45.1,bloque12b_fecha_configuracion.py:157
+correlacionadas con configuracion a los 10 dias de publicadas,vulnerabilidades,630,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 10 dias de publicadas (%),% de 1.018,61.9,bloque12b_fecha_configuracion.py:157
+correlacionadas con configuracion a los 14 dias de publicadas,vulnerabilidades,749,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 14 dias de publicadas (%),% de 1.018,73.6,bloque12b_fecha_configuracion.py:157
+correlacionadas con configuracion a los 21 dias de publicadas,vulnerabilidades,932,bloque12b_fecha_configuracion.py:156
+correlacionadas con configuracion a los 21 dias de publicadas (%),% de 1.018,91.6,bloque12b_fecha_configuracion.py:157

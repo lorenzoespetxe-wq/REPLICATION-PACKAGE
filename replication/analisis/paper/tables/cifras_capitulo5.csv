@@ -1,0 +1,105 @@
+cifra,valor,unidad_de_computo,universo,fuente,script
+pares de la tabla de telemetria,3883,pares,total,telemetria_vulnerabilidades,bloque8_telemetria.py:667
+foto de la NVD usada para el cierre (UTC),2026-10-03T16:39:39+00:00,instante,foto NVD,meta_configs_vulnerable_*.json,bloque8_telemetria.py:668
+corridas de auditoria de la recoleccion,28,filas de auditoria,campana,auditoria_acciones,bloque8_telemetria.py:222
+corridas efectivas,27,corridas efectivas,campana,auditoria_acciones,bloque8_telemetria.py:223
+cobertura de deteccion por corrida: mediana,0.6,"% de vulnerabilidades ingeridas, por corrida",corridas efectivas,auditoria_acciones,bloque8_telemetria.py:225
+vulnerabilidades detectadas por la via formal,91,vulnerabilidades distintas,campana,telemetria_vulnerabilidades.fuente_correlacion,bloque8_telemetria.py:239
+vulnerabilidades detectadas por la via de inferencia,935,vulnerabilidades distintas,campana,telemetria_vulnerabilidades.fuente_correlacion,bloque8_telemetria.py:240
+vulnerabilidades detectadas por alguna via (telemetria),1018,vulnerabilidades distintas,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:241
+vulnerabilidades detectadas (lista `ids` de la auditoria),1018,vulnerabilidades distintas,campana,auditoria_acciones.metadata_json.ids,bloque8_telemetria.py:242
+pares inferidos promovidos a formal despues,217,pares,campana,telemetria_vulnerabilidades.fuente_correlacion_final,bloque8_telemetria.py:243
+cierre (artefacto): vulnerabilidades con coincidencia formal,1009,vulnerabilidades distintas,foto NVD 03/10 visibles,configs_vulnerable_*.csv,bloque8_telemetria.py:256
+cierre (artefacto): cobertura por vulnerabilidad,94.6,% de vulnerabilidades distintas,foto NVD 03/10 visibles,auditoria ids / configs_vulnerable,bloque8_telemetria.py:257
+cierre (artefacto): cobertura por par,63.0,% de pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:258
+cierre (vulnerable): vulnerabilidades con coincidencia formal,924,vulnerabilidades distintas,foto NVD 03/10 visibles,configs_vulnerable_*.csv,bloque8_telemetria.py:256
+cierre (vulnerable): cobertura por vulnerabilidad,98.9,% de vulnerabilidades distintas,foto NVD 03/10 visibles,auditoria ids / configs_vulnerable,bloque8_telemetria.py:257
+cierre (vulnerable): cobertura por par,63.6,% de pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:258
+activos con al menos un par formal de hoy,16,activos,foto NVD 03/10,configs_vulnerable_*.csv,bloque8_telemetria.py:291
+activos sin ningun par persistido en la campana,11,activos,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:292
+srv-ad-01: pares formales de hoy no persistidos,2,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+srv-ad-02: pares formales de hoy no persistidos,2,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-dev-03: pares formales de hoy no persistidos,2,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+srv-fs-01: pares formales de hoy no persistidos,2,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+srv-fs-02: pares formales de hoy no persistidos,2,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-hr-01: pares formales de hoy no persistidos,532,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-hr-02: pares formales de hoy no persistidos,532,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-finance-01: pares formales de hoy no persistidos,532,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-finance-02: pares formales de hoy no persistidos,532,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-mkt-01: pares formales de hoy no persistidos,40,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+ws-mkt-02: pares formales de hoy no persistidos,40,pares,foto NVD 03/10 visibles,telemetria / configs_vulnerable,bloque8_telemetria.py:295
+diferencia maxima entre el indice persistido y el recalculado desde sus componentes,0.0001,unidades de indice,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:327
+filas cuya prioridad no corresponde a su indice,0,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:328
+pares de la campana,3848,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:345
+indice al detectar: mediana,0.2164,"indice [0,1]",campana,telemetria_vulnerabilidades.irc_score,bloque8_telemetria.py:346
+indice al detectar: maximo,0.5684,"indice [0,1]",campana,telemetria_vulnerabilidades.irc_score,bloque8_telemetria.py:347
+indice al detectar: p90,0.2678,"indice [0,1]",campana,telemetria_vulnerabilidades.irc_score,bloque8_telemetria.py:348
+pares de prioridad critica al detectar,0,pares,campana,telemetria_vulnerabilidades.prioridad,bloque8_telemetria.py:355
+pares de prioridad alta al detectar,17,pares,campana,telemetria_vulnerabilidades.prioridad,bloque8_telemetria.py:355
+pares de prioridad informativa al detectar,3831,pares,campana,telemetria_vulnerabilidades.prioridad,bloque8_telemetria.py:355
+pares con KEV = 1 al detectar,10,pares,campana,telemetria_vulnerabilidades.kev_status,bloque8_telemetria.py:356
+pares con EPSS = 0 al detectar,53,pares,campana,telemetria_vulnerabilidades.epss_score,bloque8_telemetria.py:357
+diferencia maxima entre el indice de cierre persistido y el recalculado,0.0001,unidades de indice,total,telemetria_vulnerabilidades.irc_score_final,bloque8_telemetria.py:387
+pares del contraste,3883,pares,total,telemetria_vulnerabilidades,bloque8_telemetria.py:388
+diferencia de indice (cierre - deteccion): mediana,0.0001,unidades de indice,total,irc_score_final - irc_score,bloque8_telemetria.py:390
+diferencia de indice: maxima,0.2295,unidades de indice,total,irc_score_final - irc_score,bloque8_telemetria.py:391
+diferencia de indice: minima,-0.001,unidades de indice,total,irc_score_final - irc_score,bloque8_telemetria.py:392
+pares cuyo indice sube,2233,pares,total,irc_score_final - irc_score,bloque8_telemetria.py:393
+pares cuyo indice baja,371,pares,total,irc_score_final - irc_score,bloque8_telemetria.py:394
+pares cuyo indice no cambia,1279,pares,total,irc_score_final - irc_score,bloque8_telemetria.py:395
+cvss: pares cuyo valor cambia entre deteccion y cierre,395,pares,total,campos *_final,bloque8_telemetria.py:406
+epss: pares cuyo valor cambia entre deteccion y cierre,3488,pares,total,campos *_final,bloque8_telemetria.py:406
+kev: pares cuyo valor cambia entre deteccion y cierre,0,pares,total,campos *_final,bloque8_telemetria.py:406
+pares que cambian de prioridad,1,pares,total,prioridad vs irc_score_final,bloque8_telemetria.py:412
+pares notificables (prioridad no informativa) al detectar,17,pares,total,telemetria_vulnerabilidades.prioridad,bloque8_telemetria.py:413
+pares notificables al cierre,17,pares,total,irc_score_final,bloque8_telemetria.py:414
+"intervalo de procesamiento, posterior_al_control_de_ritmo: pares",3795,pares,campana,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:469
+"intervalo de procesamiento, previa_al_control_de_ritmo: pares",46,pares,campana,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:469
+"intervalo de procesamiento, excluida_reparada_a_mano: pares",7,pares,campana,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:469
+intervalo de procesamiento (posterior al control de ritmo): mediana,471.8,segundos por par,pares posteriores,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:473
+intervalo de procesamiento (posterior): p90,472.6,segundos por par,pares posteriores,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:474
+intervalo de procesamiento (posterior): maximo,523.8,segundos por par,pares posteriores,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:475
+filas de la corrida del 3/09 excluidas del intervalo,7,pares,campana,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:477
+filas de la corrida del 3/09: intervalo observado,26.4,minutos,campana,fecha_alerta_generada - fecha_ingesta_pipeline,bloque8_telemetria.py:478
+filas anteriores al control de ritmo (sin la del 3/09),46,pares,campana,dia local de la ingesta,bloque8_telemetria.py:479
+pares promovidos a vulnerabilidad formal,217,pares,total,fecha_enriquecimiento_nvd no nula,bloque8_telemetria.py:489
+vulnerabilidades distintas promovidas,98,vulnerabilidades distintas,total,fecha_enriquecimiento_nvd no nula,bloque8_telemetria.py:490
+latencia de enriquecimiento de la fuente: mediana,1.7,dias,pares promovidos,fecha_enriquecimiento_nvd - fecha_publicacion_nvd,bloque8_telemetria.py:491
+latencia de enriquecimiento: p25,0.9,dias,pares promovidos,fecha_enriquecimiento_nvd - fecha_publicacion_nvd,bloque8_telemetria.py:492
+latencia de enriquecimiento: p75,1.8,dias,pares promovidos,fecha_enriquecimiento_nvd - fecha_publicacion_nvd,bloque8_telemetria.py:493
+latencia de enriquecimiento: minima,0.8,dias,pares promovidos,fecha_enriquecimiento_nvd - fecha_publicacion_nvd,bloque8_telemetria.py:494
+latencia de enriquecimiento: maxima,2.5,dias,pares promovidos,fecha_enriquecimiento_nvd - fecha_publicacion_nvd,bloque8_telemetria.py:495
+brechas entre corridas efectivas consecutivas,26,brechas,corridas efectivas,auditoria_acciones.timestamp,bloque8_telemetria.py:509
+periodicidad: mediana,24.0,horas,corridas efectivas,auditoria_acciones.timestamp,bloque8_telemetria.py:510
+periodicidad: maxima,48.0,horas,corridas efectivas,auditoria_acciones.timestamp,bloque8_telemetria.py:511
+periodicidad: minima,15.6,horas,corridas efectivas,auditoria_acciones.timestamp,bloque8_telemetria.py:512
+brechas de mas de 26 horas,5,brechas,corridas efectivas,auditoria_acciones.timestamp,bloque8_telemetria.py:513
+filas excluidas del intervalo: pares que siguen en el resto de las mediciones,7,pares,campana,dia local de la ingesta = 3/09,bloque8_telemetria.py:541
+corridas efectivas con pares nuevos persistidos,13,corridas efectivas,campana,telemetria_vulnerabilidades por marca de ingesta,bloque8_telemetria.py:569
+corridas efectivas sin pares nuevos,14,corridas efectivas,campana,telemetria_vulnerabilidades por marca de ingesta,bloque8_telemetria.py:570
+filas de auditoria que declaran cero correlacionados pese a pares persistidos esa corrida,1,filas de auditoria,campana,auditoria_acciones vs telemetria,bloque8_telemetria.py:571
+pares persistidos por corrida efectiva: media,142.5,pares por corrida efectiva,corridas efectivas,telemetria_vulnerabilidades,bloque8_telemetria.py:572
+pares persistidos por corrida efectiva: mediana,0,pares por corrida efectiva,corridas efectivas,telemetria_vulnerabilidades,bloque8_telemetria.py:573
+pares persistidos por corrida efectiva: maximo,3195,pares por corrida efectiva,corridas efectivas,telemetria_vulnerabilidades,bloque8_telemetria.py:574
+"ingestas totales sumadas sobre corridas (ventanas superpuestas, no es cobertura)",32958,"vulnerabilidades, con repeticion",corridas efectivas,auditoria_acciones.cve_ingeridos,bloque8_telemetria.py:575
+pares persistidos,3848,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:579
+notificaciones emitidas,17,pares,campana,telemetria_vulnerabilidades.estado,bloque8_telemetria.py:580
+pares informativos,3831,pares,campana,telemetria_vulnerabilidades.estado,bloque8_telemetria.py:581
+proporcion de pares notificados,0.4,% de pares,campana,telemetria_vulnerabilidades.estado,bloque8_telemetria.py:582
+notificaciones: vulnerabilidades distintas,9,vulnerabilidades distintas,campana,telemetria_vulnerabilidades.estado,bloque8_telemetria.py:584
+notificaciones: activos distintos,11,activos,campana,telemetria_vulnerabilidades.estado,bloque8_telemetria.py:585
+notificaciones por la via NVD,9,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:592
+pares por la via NVD,439,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:593
+notificaciones por la via HEURISTICA,8,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:592
+pares por la via HEURISTICA,3409,pares,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:593
+activos con al menos un par,19,activos,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:632
+activos sin ningun par,11,activos,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:633
+participacion de los 1 activos con mas pares,16.6,% de pares,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:635
+participacion de los 2 activos con mas pares,33.3,% de pares,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:635
+participacion de los 4 activos con mas pares,65.2,% de pares,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:635
+participacion de los 6 activos con mas pares,86.4,% de pares,campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:635
+indice de Herfindahl-Hirschman del reparto de pares por activo,0.137,"indice [0,1]",campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:636
+coeficiente de Gini del reparto de pares por activo,0.77,"coeficiente [0,1], sobre 30 activos",campana,telemetria_vulnerabilidades.activo_id,bloque8_telemetria.py:637
+vulnerabilidades distintas con par persistido,1018,vulnerabilidades distintas,campana,telemetria_vulnerabilidades.cve_id,bloque8_telemetria.py:643
+pares por vulnerabilidad: maximo,9,pares por vulnerabilidad,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:644
+vulnerabilidades que alcanzan a un solo activo,103,vulnerabilidades distintas,campana,telemetria_vulnerabilidades,bloque8_telemetria.py:645

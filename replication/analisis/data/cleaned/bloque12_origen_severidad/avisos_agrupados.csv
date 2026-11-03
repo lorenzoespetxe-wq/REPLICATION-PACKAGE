@@ -1,0 +1,4 @@
+publicado_por,minuto_publicacion_utc,vulnerabilidades_en_la_base,pares_en_la_base,vulnerabilidades_sin_severidad,pares_sin_severidad,horas_publicacion_a_ingesta_min,horas_publicacion_a_ingesta_max
+jenkins,2026-09-02 16:17,33,33,33,33,0.7,0.7
+apple,2026-09-14 21:17,222,444,171,342,19.7,19.7
+jenkins,2026-09-16 14:17,20,20,20,20,2.7,2.7

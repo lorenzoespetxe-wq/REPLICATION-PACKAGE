@@ -1,0 +1,18 @@
+cve_id,activo,indice,aporte_severidad,aporte_probabilidad,aporte_explotacion,aporte_criticidad,aporte_exposicion,componentes_necesarios
+CVE-2026-20277,fw-edge-01,0.4235,0.123,0.0006,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-85706,srv-git-repo,0.5529,0.15,0.0029,0.3,0.1,0.0,explotacion
+CVE-2026-85880,srv-ad-01,0.5684,0.117,0.0014,0.3,0.15,0.0,explotacion
+CVE-2026-85880,ws-finance-02,0.4684,0.117,0.0014,0.3,0.05,0.0,severidad + explotacion
+CVE-2026-85880,ws-finance-01,0.4684,0.117,0.0014,0.3,0.05,0.0,severidad + explotacion
+CVE-2026-85880,ws-hr-02,0.4684,0.117,0.0014,0.3,0.05,0.0,severidad + explotacion
+CVE-2026-85880,ws-hr-01,0.4684,0.117,0.0014,0.3,0.05,0.0,severidad + explotacion
+CVE-2026-85880,srv-print-01,0.4684,0.117,0.0014,0.3,0.05,0.0,severidad + explotacion
+CVE-2026-85880,srv-fs-02,0.5184,0.117,0.0014,0.3,0.1,0.0,explotacion
+CVE-2026-85880,srv-fs-01,0.5184,0.117,0.0014,0.3,0.1,0.0,explotacion
+CVE-2026-85880,srv-ad-02,0.5684,0.117,0.0014,0.3,0.15,0.0,explotacion
+CVE-2026-20274,fw-edge-01,0.4487,0.147,0.0017,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-20275,fw-edge-01,0.4325,0.132,0.0004,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-20276,fw-edge-01,0.4296,0.129,0.0006,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-20278,fw-edge-01,0.4327,0.132,0.0007,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-20279,fw-edge-01,0.4477,0.147,0.0007,0.0,0.2,0.1,severidad + criticidad + exposicion
+CVE-2026-20280,fw-edge-01,0.4327,0.132,0.0007,0.0,0.2,0.1,severidad + criticidad + exposicion

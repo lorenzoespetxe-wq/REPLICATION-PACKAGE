@@ -1,0 +1,382 @@
+{
+  "name": "Webhook Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bb778ba5-3430-4562-b767-d49104b8475f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1280,
+        96
+      ],
+      "id": "2e4f1174-c621-4b84-9eeb-ecb239b4668f",
+      "name": "Webhook Trigger",
+      "webhookId": "bb778ba5-3430-4562-b767-d49104b8475f"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    a.id AS activo_id,\n    a.hostname,\n    a.exposicion_internet,\n    cn.peso_normalizacion AS crit_norm\nFROM public.activos a\nJOIN public.criticidad_niveles cn ON a.criticidad_id = cn.id\nWHERE a.id = {{ $json.body.activo_id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1072,
+        96
+      ],
+      "id": "ce8515d3-8c6d-4ff9-945d-178b342a2f84",
+      "name": "Fetch Asset DB",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cveId",
+              "value": "={{ $('Webhook Trigger').item.json.body.cve_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "PoC_Tesis_SecOps/1.0 (investigacion@utn.edu.ar)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -864,
+        96
+      ],
+      "id": "2f52aaf9-fb9f-41bf-872d-82be33d251c1",
+      "name": "Query NVD",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xaqr3XFC4nLuLXa5",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.first.org/data/v1/epss",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cve",
+              "value": "={{ $('Webhook Trigger').item.json.body.cve_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -640,
+        96
+      ],
+      "id": "4e189108-e5d1-4aad-a7ed-8f5ec944e4ef",
+      "name": "Fetch EPSS"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.auditoria_acciones (accion, tipo_entidad, entidad_id, metadata_json)\nSELECT 'N8N_REPROCESO', 'vulnerabilidad', t.id,\n       jsonb_build_object('resultado', 'INFORMATIVA',\n                          'prioridad', $3::text,\n                          'irc_score', $4::numeric)\nFROM public.telemetria_vulnerabilidades t\nWHERE t.cve_id = $1::text AND t.activo_id = $2::int\nRETURNING id;",
+        "options": {
+          "queryReplacement": "={{ [ $('IRC Triage').item.json.cve_id, $('IRC Triage').item.json.activo_id, $('IRC Triage').item.json.prioridad, $('IRC Triage').item.json.irc_score ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        192
+      ],
+      "id": "dd1da275-a3ec-4dab-8f67-084611e7add3",
+      "name": "Audit Informativa",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.auditoria_acciones (accion, tipo_entidad, entidad_id, metadata_json)\nSELECT 'N8N_REPROCESO', 'vulnerabilidad', t.id,\n       jsonb_build_object('resultado', 'NOTIFICADA',\n                          'prioridad', $3::text,\n                          'irc_score', $4::numeric,\n                          'message_id_gmail', $5::text)\nFROM public.telemetria_vulnerabilidades t\nWHERE t.cve_id = $1::text AND t.activo_id = $2::int\nRETURNING id;",
+        "options": {
+          "queryReplacement": "={{ [ $('IRC Triage').item.json.cve_id, $('IRC Triage').item.json.activo_id, $('IRC Triage').item.json.prioridad, $('IRC Triage').item.json.irc_score, $json.id ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d3929d6f-df17-45b2-bbe7-428ccec7e536",
+      "name": "Audit Notificada",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/webhooks/n8n/new-vulnerability",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"cve_id\":      \"{{ $('Calculate IRC').item.json.cve_id }}\",\n  \"activo_id\":   \"{{ $('Calculate IRC').item.json.activo_id }}\",\n  \"prioridad\":   \"{{ $('Calculate IRC').item.json.prioridad }}\",\n  \"irc_score\":   \"{{ $('Calculate IRC').item.json.irc_score }}\",\n  \"cvss_score\":  \"{{ $('Calculate IRC').item.json.cvss_score }}\",\n  \"hostname\":    \"{{ $('Calculate IRC').item.json.hostname }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d02ad502-7c27-4d5a-8b7a-f3ff48d3d37e",
+      "name": "Notify API (Notificada)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/webhooks/n8n/new-vulnerability",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"cve_id\":      \"{{ $('Calculate IRC').item.json.cve_id }}\",\n  \"activo_id\":   \"{{ $('Calculate IRC').item.json.activo_id }}\",\n  \"prioridad\":   \"{{ $('Calculate IRC').item.json.prioridad }}\",\n  \"irc_score\":   \"{{ $('Calculate IRC').item.json.irc_score }}\",\n  \"cvss_score\":  \"{{ $('Calculate IRC').item.json.cvss_score }}\",\n  \"hostname\":    \"{{ $('Calculate IRC').item.json.hostname }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        192
+      ],
+      "id": "b942960b-0ec0-41f2-927a-d385bc3c3ce4",
+      "name": "Notify API (Informativa)"
+    },
+    {
+      "parameters": {
+        "sendTo": "analista@ejemplo.org",
+        "subject": "=[SecOps PoC] Alerta {{ $json.prioridad }}: {{ $json.cve_id }} (Activo ID: {{ $json.activo_id }})",
+        "message": "=<h2>🚨 ALERTA DE SEGURIDAD — SecOps Threat Intelligence</h2> <p>Se ha detectado una vulnerabilidad que supera el umbral de triaje establecido.</p>  <table border=\"1\" cellpadding=\"8\" cellspacing=\"0\" style=\"border-collapse: collapse; width: 100%;\">   <tr style=\"background-color: #f2f2f2;\">     <th align=\"left\">Métrica / Atributo</th>     <th align=\"left\">Valor de Telemetría</th>   </tr>   <tr>     <td><strong>Activo Afectado</strong></td>     <td>ID: {{ $json.activo_id }}</td>   </tr>   <tr>     <td><strong>CVE ID</strong></td>     <td><strong>{{ $json.cve_id }}</strong></td>   </tr>   <tr>     <td><strong>Prioridad Asignada</strong></td>     <td><span style=\"color: #d9534f; font-weight: bold;\">{{ $json.prioridad }}</span> (IRC: {{ $json.irc_score }})</td>   </tr>   <tr>     <td><strong>CVSS Base Score</strong></td>     <td>{{ $json.cvss_score }}</td>   </tr>   <tr>     <td><strong>EPSS Score (FIRST)</strong></td>     <td>{{ $json.epss_score }}</td>   </tr> </table>  <h3>Descripción Oficial NVD:</h3> <blockquote style=\"background-color: #f9f9f9; border-left: 4px solid #ccc; margin: 0; padding: 10px;\">   {{ $json.cve_description }} </blockquote>  <p><small>Referencia técnica: <a href=\"{{ $json.nvd_url }}\">{{ $json.nvd_url }}</a></small></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4ce7408b-6ca7-4724-a13c-7cc9c81d66a8",
+      "name": "Send Alert",
+      "webhookId": "44a37d21-d064-44a8-b48c-40c1478a4bfc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lEcLGht7btFiGnjk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0c6bfdc-7082-49a6-a75b-807bc2cf37e3",
+              "leftValue": "={{ $json.irc_score }}",
+              "rightValue": 0.4,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        96
+      ],
+      "id": "e45066d3-9f00-40f7-a25f-bd3035ffb29c",
+      "name": "IRC Triage"
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhook  = $('Webhook Trigger').item.json.body;\nconst asset    = $('Fetch Asset DB').item.json;\nconst nvd      = $('Query NVD').item.json;\nconst epssRaw  = $input.item.json?.data?.[0]?.epss;\n\nconst vuln     = nvd.vulnerabilities?.[0]?.cve;\nconst cvssScore = vuln?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV40?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore\n               ?? 0;\nconst kevStatus = Boolean(vuln?.cisaExploitAdd);\n\nconst cvssNorm  = cvssScore / 10.0;\nconst epssScore = parseFloat(epssRaw) || 0.0;\nconst kevScore  = kevStatus ? 1.0 : 0.0;\nconst critNorm  = parseFloat(asset.crit_norm) || 0.0;\nconst expScore  = asset.exposicion_internet ? 1.0 : 0.0;\n\nconst rawIrc = (0.15 * cvssNorm) + (0.25 * epssScore) +\n               (0.30 * kevScore) + (0.20 * critNorm)  + (0.10 * expScore);\nconst ircFinal = parseFloat(rawIrc.toFixed(4));\n\nlet prioridad = 'INFORMATIVA';\nif (ircFinal >= 0.70)      prioridad = 'CRITICA';\nelse if (ircFinal >= 0.40) prioridad = 'ALTA';\n\nreturn [{\n  json: {\n    activo_id:              asset.activo_id,\n    cve_id:                 webhook.cve_id,\n    hostname:               asset.hostname,\n    exposicion_internet:    asset.exposicion_internet,\n    crit_norm:              critNorm,\n    cvss_score:             cvssScore,\n    epss_score:             epssScore,\n    kev_status:             kevStatus,\n    irc_score:              ircFinal,\n    prioridad,\n    fecha_publicacion_nvd:  vuln?.published ?? null,\n    fecha_ingesta_pipeline: new Date().toISOString(),\n    cve_description:        vuln?.descriptions?.find(d => d.lang === 'en')?.value ?? '',\n    nvd_url:                `https://nvd.nist.gov/vuln/detail/${webhook.cve_id}`,\n    epss_url:               `https://api.first.org/data/v1/epss?cve=${webhook.cve_id}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        96
+      ],
+      "id": "a1402eee-ef52-4675-81ff-f220308ef978",
+      "name": "Calculate IRC"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Asset DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Asset DB": {
+      "main": [
+        [
+          {
+            "node": "Query NVD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query NVD": {
+      "main": [
+        [
+          {
+            "node": "Fetch EPSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch EPSS": {
+      "main": [
+        [
+          {
+            "node": "Calculate IRC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Informativa": {
+      "main": [
+        [
+          {
+            "node": "Notify API (Informativa)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Notificada": {
+      "main": [
+        [
+          {
+            "node": "Notify API (Notificada)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Alert": {
+      "main": [
+        [
+          {
+            "node": "Audit Notificada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IRC Triage": {
+      "main": [
+        [
+          {
+            "node": "Send Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Informativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate IRC": {
+      "main": [
+        [
+          {
+            "node": "IRC Triage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "58fc702c-29a5-4cd9-b540-48f1bdca2e5a",
+  "id": "59LjAPMppVwyBgtm",
+  "tags": [],
+  "meta": null
+}

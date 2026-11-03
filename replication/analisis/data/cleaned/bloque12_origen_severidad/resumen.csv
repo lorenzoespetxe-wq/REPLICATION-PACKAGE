@@ -1,0 +1,47 @@
+medida,unidad,valor
+pares ingeridos sin severidad (cvss_score = 0),pares,395
+vulnerabilidades distintas ingeridas sin severidad,vulnerabilidades,224
+sin registro en la instantanea CVE List v5,vulnerabilidades,0
+CNA con metrica CVSS en la instantanea,vulnerabilidades,0
+ADP con metrica CVSS en la instantanea,vulnerabilidades,223
+ADP con metrica CVSS: nombre CISA-ADP,vulnerabilidades,223
+puntaje ADP igual a cvss_score_final,vulnerabilidades,215
+consultadas a la NVD (sin coincidencia ADP),vulnerabilidades,9
+metricas NVD con source igual al orgId CISA-ADP de la instantanea,metricas,8
+origen de la severidad de cierre: CISA-ADP (coincide),vulnerabilidades,215
+origen de la severidad de cierre: NIST (Primary),vulnerabilidades,9
+origen de la severidad de cierre: CNA,vulnerabilidades,0
+origen de la severidad de cierre: CISA-ADP (segun NVD),vulnerabilidades,0
+origen de la severidad de cierre: otro,vulnerabilidades,0
+origen de la severidad de cierre: no determinable,vulnerabilidades,0
+origen de la severidad de cierre: sin severidad al cierre,vulnerabilidades,0
+origen de la severidad de cierre: CISA-ADP (coincide),pares,378
+origen de la severidad de cierre: NIST (Primary),pares,17
+origen de la severidad de cierre: CNA,pares,0
+origen de la severidad de cierre: CISA-ADP (segun NVD),pares,0
+origen de la severidad de cierre: otro,pares,0
+origen de la severidad de cierre: no determinable,pares,0
+origen de la severidad de cierre: sin severidad al cierre,pares,0
+"dia de corrida 2026-09-02, origen CISA-ADP (coincide)",vulnerabilidades,33
+"dia de corrida 2026-09-02, origen CISA-ADP (coincide)",pares,33
+"dia de corrida 2026-09-15, origen CISA-ADP (coincide)",vulnerabilidades,163
+"dia de corrida 2026-09-15, origen CISA-ADP (coincide)",pares,326
+"dia de corrida 2026-09-15, origen NIST (Primary)",vulnerabilidades,8
+"dia de corrida 2026-09-15, origen NIST (Primary)",pares,16
+"dia de corrida 2026-09-16, origen CISA-ADP (coincide)",vulnerabilidades,19
+"dia de corrida 2026-09-16, origen CISA-ADP (coincide)",pares,19
+"dia de corrida 2026-09-16, origen NIST (Primary)",vulnerabilidades,1
+"dia de corrida 2026-09-16, origen NIST (Primary)",pares,1
+ADP con CVSS: ultima modificacion ADP anterior a la primera ingesta,vulnerabilidades,18
+ADP con CVSS: ultima modificacion ADP posterior a la primera ingesta (no prueba ausencia al ingerir),vulnerabilidades,205
+ADP coincide: ultima modificacion ADP anterior a la primera ingesta,vulnerabilidades,18
+ADP coincide: ultima modificacion ADP posterior a la primera ingesta,vulnerabilidades,197
+avisos agrupados (quien publico + minuto de publicacion) que reunen las vulnerabilidades sin severidad,avisos,3
+sin severidad: vulnerabilidades encontradas en el historial de su corrida de ingesta,vulnerabilidades,224
+sin severidad: sin ninguna metrica CVSS al ingerir (cero por ausencia),vulnerabilidades,224
+sin severidad: con metrica CVSS de puntaje 0 al ingerir (cero verdadero),vulnerabilidades,0
+puntaje de cierre minimo de las vulnerabilidades sin severidad,puntaje,3.1
+fuera de esos avisos: pares ingeridos a menos de 24 horas de la publicacion,pares,66
+"fuera de esos avisos: de ellos, sin severidad",pares,0
+fuera de esos avisos: edad minima al ingerir,horas,1.9
+fuera de esos avisos: edad maxima al ingerir,horas,23.7

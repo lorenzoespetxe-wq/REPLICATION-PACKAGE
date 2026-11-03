@@ -1,0 +1,19 @@
+escenario,grupo,unidad,revisados,errores_revisados,universo_estimado,errores_estimados,tasa,n_efectivo,ic95_inf,ic95_sup,wilson_kish_inf,wilson_kish_sup
+I63 error,total,caso,72,13,2025,66.3,0.0328,72,0.0051,0.1042,0.0085,0.1183
+I63 error,total,par,72,13,3424,66.3,0.0194,72,0.0012,0.0838,0.0034,0.104
+I63 error,windows_server,caso,43,0,1688,0,0.0,43,0.0,0.0822,0.0,0.082
+I63 error,windows_server,par,43,0,2862,0,0.0,43,0.0,0.0822,0.0,0.0874
+I63 error,resto,caso,29,13,337,66.3,0.1968,29,0.0735,0.3859,0.0645,0.4657
+I63 error,resto,par,29,13,562,66.3,0.118,29,0.0287,0.292,0.0244,0.4173
+I63 e I08 error,total,caso,72,14,2025,67.3,0.0333,72,0.0053,0.1049,0.0087,0.119
+I63 e I08 error,total,par,72,14,3424,67.3,0.0197,72,0.0013,0.0843,0.0034,0.1044
+I63 e I08 error,windows_server,caso,43,0,1688,0,0.0,43,0.0,0.0822,0.0,0.082
+I63 e I08 error,windows_server,par,43,0,2862,0,0.0,43,0.0,0.0822,0.0,0.0874
+I63 e I08 error,resto,caso,29,14,337,67.3,0.1998,29,0.0754,0.3892,0.066,0.4688
+I63 e I08 error,resto,par,29,14,562,67.3,0.1198,29,0.0296,0.2943,0.025,0.4193
+cuatro dudosos error,total,caso,72,16,2025,75.3,0.0372,72,0.0068,0.1106,0.0104,0.1247
+cuatro dudosos error,total,par,72,16,3424,75.3,0.022,72,0.0018,0.0879,0.0042,0.108
+cuatro dudosos error,windows_server,caso,43,0,1688,0,0.0,43,0.0,0.0822,0.0,0.082
+cuatro dudosos error,windows_server,par,43,0,2862,0,0.0,43,0.0,0.0822,0.0,0.0874
+cuatro dudosos error,resto,caso,29,16,337,75.3,0.2235,29,0.0909,0.4158,0.0785,0.493
+cuatro dudosos error,resto,par,29,16,562,75.3,0.134,29,0.0368,0.3119,0.0302,0.4349

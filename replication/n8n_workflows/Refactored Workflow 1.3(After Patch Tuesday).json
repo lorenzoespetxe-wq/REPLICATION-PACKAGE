@@ -1,0 +1,2043 @@
+{
+  "name": "Refactored Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 14
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2384,
+        -80
+      ],
+      "id": "7da6c7ae-fdd4-4d93-9532-34664f1a99a1",
+      "name": "Schedule Trigger",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    a.id AS activo_id,\n    a.hostname,\n    a.cpe,\n    a.exposicion_internet,\n    cn.peso_normalizacion AS crit_norm\nFROM public.activos a\nJOIN public.criticidad_niveles cn ON a.criticidad_id = cn.id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2176,
+        -80
+      ],
+      "id": "66aee976-0190-4f4d-ad36-495c5709a53e",
+      "name": "Fetch Assets",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.first.org/data/v1/epss",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cve",
+              "value": "={{ $json.cve_id }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 120
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1552,
+        -80
+      ],
+      "id": "76bbe9b8-6f86-4b0e-89ed-39b7981cc98a",
+      "name": "Fetch EPSS Score"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parentItems = $('Parse NVD Response').all();\nconst epssItems = $input.all();\n\n// Construir mapa cve_id → respuesta EPSS\nconst epssMap = {};\nfor (const item of epssItems) {\n    const cveId = item.json?.data?.[0]?.cve;\n    if (cveId) epssMap[cveId] = item.json;\n}\n\n// Join robusto por cve_id\nconst merged = [];\nfor (const parentItem of parentItems) {\n    const parentData = parentItem.json;\n    if (!parentData) continue;\n    merged.push({\n        json: {\n            ...parentData,\n            epss_raw: epssMap[parentData.cve_id] || {}\n        }\n    });\n}\n\nreturn merged;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        -80
+      ],
+      "id": "055d633e-316d-4c99-9d6e-e03fb25f5121",
+      "name": "Merge EPSS Context"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst output = [];\n\nfor (const item of items) {\n    const data = item.json;\n    if (!data) continue;\n\n    // 1. Normalización de variables (escala estricta 0.0 a 1.0)\n    const cvssNorm = (typeof data.cvss_score === 'number' ? data.cvss_score : 0.0) / 10.0;\n\n    const rawEpssString = data.epss_raw?.data?.[0]?.epss;\n    const epssScore = parseFloat(rawEpssString) || 0.0;\n\n    const kevScore = data.cisa_kev ? 1.0 : 0.0;\n    const critNorm = typeof data.crit_norm === 'number' ? data.crit_norm : parseFloat(data.crit_norm) || 0.0;\n    const expScore = data.exposicion_internet ? 1.0 : 0.0;\n\n    // 2. Fórmula canónica (R7: NO se modifica, SSVC solo se persiste)\n    // IRC = (0.15 × CVSS) + (0.25 × EPSS) + (0.30 × KEV) + (0.20 × CRIT) + (0.10 × EXP)\n    const rawIrc = (0.15 * cvssNorm) +\n                   (0.25 * epssScore) +\n                   (0.30 * kevScore) +\n                   (0.20 * critNorm) +\n                   (0.10 * expScore);\n\n    const ircFinal = parseFloat(rawIrc.toFixed(4));\n\n    // 3. Umbrales de prioridad\n    let prioridadAsignada = 'INFORMATIVA';\n    if (ircFinal >= 0.70) {\n        prioridadAsignada = 'CRITICA';\n    } else if (ircFinal >= 0.40) {\n        prioridadAsignada = 'ALTA';\n    }\n\n    // 4. Aplanamiento 1:1 contra public.telemetria_vulnerabilidades\n    output.push({\n        json: {\n            activo_id: data.activo_id,\n            cve_id: data.cve_id,\n            cvss_score: data.cvss_score,\n            epss_score: epssScore,\n            kev_status: data.cisa_kev,\n            irc_score: ircFinal,\n            prioridad: prioridadAsignada,\n            fecha_publicacion_nvd: data.fecha_publicacion,\n\n            // R6: la marca viene de Parse NVD Response, NO se regenera acá\n            fecha_ingesta_pipeline: data.fecha_ingesta_pipeline,\n\n            // Columnas nuevas (R3 y R6/R7)\n            fecha_modificacion_nvd: data.fecha_modificacion_nvd,\n            fuente_correlacion: data.fuente_correlacion,\n            nivel_confianza: data.nivel_confianza,\n            ssvc_exploitation: data.ssvc_exploitation,\n\n            cve_description: data.cve_description,\n            nvd_url: `https://nvd.nist.gov/vuln/detail/${data.cve_id}`,\n            epss_url: `https://api.first.org/data/v1/epss?cve=${data.cve_id}`\n        }\n    });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1136,
+        -80
+      ],
+      "id": "634a4e2c-1044-41c8-bb5c-7279a07bbad3",
+      "name": "Calculate IRC"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "telemetria_vulnerabilidades",
+          "mode": "list",
+          "cachedResultName": "telemetria_vulnerabilidades"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "kev_status": "={{ $('Calculate IRC').item.json.kev_status }}",
+            "activo_id": "={{ $('Calculate IRC').item.json.activo_id }}",
+            "epss_score": "={{ $('Calculate IRC').item.json.epss_score }}",
+            "irc_score": "={{ $('Calculate IRC').item.json.irc_score }}",
+            "cve_id": "={{ $('Calculate IRC').item.json.cve_id }}",
+            "cvss_score": "={{ $('Calculate IRC').item.json.cvss_score }}",
+            "prioridad": "={{ $('Calculate IRC').item.json.prioridad }}",
+            "fecha_publicacion_nvd": "={{ $('Calculate IRC').item.json.fecha_publicacion_nvd }}",
+            "fecha_ingesta_pipeline": "={{ $('Calculate IRC').item.json.fecha_ingesta_pipeline }}",
+            "nvd_url": "={{ $('Calculate IRC').item.json.nvd_url }}",
+            "epss_url": "={{ $('Calculate IRC').item.json.epss_url }}",
+            "cve_description": "={{ $('Calculate IRC').item.json.cve_description }}",
+            "fuente_correlacion": "={{ $('Calculate IRC').item.json.fuente_correlacion }}",
+            "nivel_confianza": "={{ $('Calculate IRC').item.json.nivel_confianza }}",
+            "fecha_modificacion_nvd": "={{ $('Calculate IRC').item.json.fecha_modificacion_nvd }}",
+            "ssvc_exploitation": "={{ $('Calculate IRC').item.json.ssvc_exploitation || null }}"
+          },
+          "matchingColumns": [
+            "cve_id",
+            "activo_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_id",
+              "displayName": "cve_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "activo_id",
+              "displayName": "activo_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cvss_score",
+              "displayName": "cvss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "epss_score",
+              "displayName": "epss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "kev_status",
+              "displayName": "kev_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "irc_score",
+              "displayName": "irc_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "fecha_publicacion_nvd",
+              "displayName": "fecha_publicacion_nvd",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "fecha_ingesta_pipeline",
+              "displayName": "fecha_ingesta_pipeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "fecha_alerta_generada",
+              "displayName": "fecha_alerta_generada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "cve_description",
+              "displayName": "cve_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "nvd_url",
+              "displayName": "nvd_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "epss_url",
+              "displayName": "epss_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "fecha_hitl_update",
+              "displayName": "fecha_hitl_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "fecha_actualizacion_datos",
+              "displayName": "fecha_actualizacion_datos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "tiempo_deteccion_minutos",
+              "displayName": "tiempo_deteccion_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "fuente_correlacion",
+              "displayName": "fuente_correlacion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "nivel_confianza",
+              "displayName": "nivel_confianza",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_modificacion_nvd",
+              "displayName": "fecha_modificacion_nvd",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "ssvc_exploitation",
+              "displayName": "ssvc_exploitation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -480,
+        -224
+      ],
+      "id": "6db3f8ef-c3cd-46be-856c-00a93f99806b",
+      "name": "Upsert Telemetria",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0c6bfdc-7082-49a6-a75b-807bc2cf37e3",
+              "leftValue": "={{ $json.irc_score }}",
+              "rightValue": 0.4,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -272,
+        -240
+      ],
+      "id": "e4c27aec-7f89-4e0f-88e5-9dc7ff6bcec9",
+      "name": "IRC Triage"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "telemetria_vulnerabilidades",
+          "mode": "list",
+          "cachedResultName": "telemetria_vulnerabilidades"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "INFORMATIVA",
+            "activo_id": "={{ $json.activo_id }}",
+            "cve_id": "={{ $json.cve_id }}",
+            "fecha_alerta_generada": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [
+            "cve_id",
+            "activo_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_id",
+              "displayName": "cve_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "activo_id",
+              "displayName": "activo_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cvss_score",
+              "displayName": "cvss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_score",
+              "displayName": "epss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kev_status",
+              "displayName": "kev_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "irc_score",
+              "displayName": "irc_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_publicacion_nvd",
+              "displayName": "fecha_publicacion_nvd",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_ingesta_pipeline",
+              "displayName": "fecha_ingesta_pipeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_alerta_generada",
+              "displayName": "fecha_alerta_generada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_hitl_update",
+              "displayName": "fecha_hitl_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nvd_url",
+              "displayName": "nvd_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_url",
+              "displayName": "epss_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_description",
+              "displayName": "cve_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tiempo_deteccion_minutos",
+              "displayName": "tiempo_deteccion_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        -144
+      ],
+      "id": "2b37a342-f455-4cb6-98de-2550a956eb7a",
+      "name": "Log Informativa",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "analista@ejemplo.org",
+        "subject": "=[SecOps PoC] Alerta {{ $json.prioridad }}: {{ $json.cve_id }} (Activo ID: {{ $json.activo_id }})",
+        "message": "=<h2>🚨 ALERTA DE SEGURIDAD — SecOps Threat Intelligence</h2> <p>Se ha detectado una vulnerabilidad que supera el umbral de triaje establecido.</p>  <table border=\"1\" cellpadding=\"8\" cellspacing=\"0\" style=\"border-collapse: collapse; width: 100%;\">   <tr style=\"background-color: #f2f2f2;\">     <th align=\"left\">Métrica / Atributo</th>     <th align=\"left\">Valor de Telemetría</th>   </tr>   <tr>     <td><strong>Activo Afectado</strong></td>     <td>ID: {{ $json.activo_id }}</td>   </tr>   <tr>     <td><strong>CVE ID</strong></td>     <td><strong>{{ $json.cve_id }}</strong></td>   </tr>   <tr>     <td><strong>Prioridad Asignada</strong></td>     <td><span style=\"color: #d9534f; font-weight: bold;\">{{ $json.prioridad }}</span> (IRC: {{ $json.irc_score }})</td>   </tr>   <tr>     <td><strong>CVSS Base Score</strong></td>     <td>{{ $json.cvss_score }}</td>   </tr>   <tr>     <td><strong>EPSS Score (FIRST)</strong></td>     <td>{{ $json.epss_score }}</td>   </tr> </table>  <h3>Descripción Oficial NVD:</h3> <blockquote style=\"background-color: #f9f9f9; border-left: 4px solid #ccc; margin: 0; padding: 10px;\">   {{ $json.cve_description }} </blockquote>  <p><small>Referencia técnica: <a href=\"{{ $json.nvd_url }}\">{{ $json.nvd_url }}</a></small></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        -320
+      ],
+      "id": "b812848f-83cc-4ca7-b3cb-bd39c5567bb6",
+      "name": "Send Alert",
+      "webhookId": "6b991998-7fa6-4956-b5a9-ae732b5fecf1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lEcLGht7btFiGnjk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "telemetria_vulnerabilidades",
+          "mode": "list",
+          "cachedResultName": "telemetria_vulnerabilidades"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "activo_id": "={{ $('IRC Triage').item.json.activo_id }}",
+            "cve_id": "={{ $('IRC Triage').item.json.cve_id }}",
+            "estado": "NOTIFICADA",
+            "fecha_alerta_generada": "={{ new Date().toISOString() }}",
+            "message_id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "cve_id",
+            "activo_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_id",
+              "displayName": "cve_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "activo_id",
+              "displayName": "activo_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cvss_score",
+              "displayName": "cvss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_score",
+              "displayName": "epss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kev_status",
+              "displayName": "kev_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "irc_score",
+              "displayName": "irc_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_publicacion_nvd",
+              "displayName": "fecha_publicacion_nvd",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_ingesta_pipeline",
+              "displayName": "fecha_ingesta_pipeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_alerta_generada",
+              "displayName": "fecha_alerta_generada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_hitl_update",
+              "displayName": "fecha_hitl_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nvd_url",
+              "displayName": "nvd_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_url",
+              "displayName": "epss_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_description",
+              "displayName": "cve_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tiempo_deteccion_minutos",
+              "displayName": "tiempo_deteccion_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        112,
+        -320
+      ],
+      "id": "0c69a1b8-65e5-4353-9b72-f31c22455488",
+      "name": "Update Alert State",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total\nFROM public.telemetria_vulnerabilidades\nWHERE cve_id    = '{{ $json.cve_id }}'\n  AND activo_id = {{ $json.activo_id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -928,
+        -80
+      ],
+      "id": "97ac0eae-8bcf-4288-af7b-ff17a0698c49",
+      "name": "Check Existence",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bb778ba5-3430-4562-b767-d49104b8475f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2384,
+        544
+      ],
+      "id": "c6e10038-f422-4a85-a604-b9547227dac9",
+      "name": "Webhook Trigger",
+      "webhookId": "bb778ba5-3430-4562-b767-d49104b8475f"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    a.id AS activo_id,\n    a.hostname,\n    a.exposicion_internet,\n    cn.peso_normalizacion AS crit_norm\nFROM public.activos a\nJOIN public.criticidad_niveles cn ON a.criticidad_id = cn.id\nWHERE a.id = {{ $json.body.activo_id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2176,
+        544
+      ],
+      "id": "fb67c81f-8e1b-42c2-873f-97fbbd13aea3",
+      "name": "Fetch Asset DB",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cveId",
+              "value": "={{ $('Webhook Trigger').item.json.body.cve_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "PoC_Tesis_SecOps/1.0 (investigacion@utn.edu.ar)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1968,
+        544
+      ],
+      "id": "97909576-1085-4c2d-aa6a-dffab7037172",
+      "name": "Query NVD",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xaqr3XFC4nLuLXa5",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.first.org/data/v1/epss",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cve",
+              "value": "={{ $('Webhook Trigger').item.json.body.cve_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1744,
+        544
+      ],
+      "id": "ef8dfbfe-f5bc-4c47-8d83-50754ccd8da2",
+      "name": "Fetch EPSS"
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhook  = $('Webhook Trigger').item.json.body;\nconst asset    = $('Fetch Asset DB').item.json;\nconst nvd      = $('Query NVD').item.json;\nconst epssRaw  = $input.item.json?.data?.[0]?.epss;\n\nconst vuln     = nvd.vulnerabilities?.[0]?.cve;\nconst cvssScore = vuln?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV40?.[0]?.cvssData?.baseScore\n               ?? vuln?.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore\n               ?? 0;\nconst kevStatus = Boolean(vuln?.cisaExploitAdd);\n\nconst cvssNorm  = cvssScore / 10.0;\nconst epssScore = parseFloat(epssRaw) || 0.0;\nconst kevScore  = kevStatus ? 1.0 : 0.0;\nconst critNorm  = parseFloat(asset.crit_norm) || 0.0;\nconst expScore  = asset.exposicion_internet ? 1.0 : 0.0;\n\nconst rawIrc = (0.15 * cvssNorm) + (0.25 * epssScore) +\n               (0.30 * kevScore) + (0.20 * critNorm)  + (0.10 * expScore);\nconst ircFinal = parseFloat(rawIrc.toFixed(4));\n\nlet prioridad = 'INFORMATIVA';\nif (ircFinal >= 0.70)      prioridad = 'CRITICA';\nelse if (ircFinal >= 0.40) prioridad = 'ALTA';\n\nreturn [{\n  json: {\n    activo_id:              asset.activo_id,\n    cve_id:                 webhook.cve_id,\n    hostname:               asset.hostname,\n    exposicion_internet:    asset.exposicion_internet,\n    crit_norm:              critNorm,\n    cvss_score:             cvssScore,\n    epss_score:             epssScore,\n    kev_status:             kevStatus,\n    irc_score:              ircFinal,\n    prioridad,\n    fecha_publicacion_nvd:  vuln?.published ?? null,\n    fecha_ingesta_pipeline: new Date().toISOString(),\n    cve_description:        vuln?.descriptions?.find(d => d.lang === 'en')?.value ?? '',\n    nvd_url:                `https://nvd.nist.gov/vuln/detail/${webhook.cve_id}`,\n    epss_url:               `https://api.first.org/data/v1/epss?cve=${webhook.cve_id}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        544
+      ],
+      "id": "ef7fcb00-8394-4ad9-9689-ecf7a25b711c",
+      "name": "Calculate IRC."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0c6bfdc-7082-49a6-a75b-807bc2cf37e3",
+              "leftValue": "={{ $json.irc_score }}",
+              "rightValue": 0.4,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1312,
+        544
+      ],
+      "id": "09aeedbe-e3a9-4eb3-9d92-a488739e82d7",
+      "name": "IRC Triage."
+    },
+    {
+      "parameters": {
+        "sendTo": "analista@ejemplo.org",
+        "subject": "=[SecOps PoC] Alerta {{ $json.prioridad }}: {{ $json.cve_id }} (Activo ID: {{ $json.activo_id }})",
+        "message": "=<h2>🚨 ALERTA DE SEGURIDAD — SecOps Threat Intelligence</h2> <p>Se ha detectado una vulnerabilidad que supera el umbral de triaje establecido.</p>  <table border=\"1\" cellpadding=\"8\" cellspacing=\"0\" style=\"border-collapse: collapse; width: 100%;\">   <tr style=\"background-color: #f2f2f2;\">     <th align=\"left\">Métrica / Atributo</th>     <th align=\"left\">Valor de Telemetría</th>   </tr>   <tr>     <td><strong>Activo Afectado</strong></td>     <td>ID: {{ $json.activo_id }}</td>   </tr>   <tr>     <td><strong>CVE ID</strong></td>     <td><strong>{{ $json.cve_id }}</strong></td>   </tr>   <tr>     <td><strong>Prioridad Asignada</strong></td>     <td><span style=\"color: #d9534f; font-weight: bold;\">{{ $json.prioridad }}</span> (IRC: {{ $json.irc_score }})</td>   </tr>   <tr>     <td><strong>CVSS Base Score</strong></td>     <td>{{ $json.cvss_score }}</td>   </tr>   <tr>     <td><strong>EPSS Score (FIRST)</strong></td>     <td>{{ $json.epss_score }}</td>   </tr> </table>  <h3>Descripción Oficial NVD:</h3> <blockquote style=\"background-color: #f9f9f9; border-left: 4px solid #ccc; margin: 0; padding: 10px;\">   {{ $json.cve_description }} </blockquote>  <p><small>Referencia técnica: <a href=\"{{ $json.nvd_url }}\">{{ $json.nvd_url }}</a></small></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1104,
+        448
+      ],
+      "id": "e4a3f40f-f2e4-4d91-a0ae-2d63ccc3dff8",
+      "name": "Send Alert.",
+      "webhookId": "44a37d21-d064-44a8-b48c-40c1478a4bfc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lEcLGht7btFiGnjk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "telemetria_vulnerabilidades",
+          "mode": "list",
+          "cachedResultName": "telemetria_vulnerabilidades"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "INFORMATIVA",
+            "activo_id": "={{ $json.activo_id }}",
+            "cve_id": "={{ $json.cve_id }}",
+            "fecha_alerta_generada": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [
+            "cve_id",
+            "activo_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_id",
+              "displayName": "cve_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "activo_id",
+              "displayName": "activo_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cvss_score",
+              "displayName": "cvss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_score",
+              "displayName": "epss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kev_status",
+              "displayName": "kev_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "irc_score",
+              "displayName": "irc_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_publicacion_nvd",
+              "displayName": "fecha_publicacion_nvd",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_ingesta_pipeline",
+              "displayName": "fecha_ingesta_pipeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_alerta_generada",
+              "displayName": "fecha_alerta_generada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_hitl_update",
+              "displayName": "fecha_hitl_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nvd_url",
+              "displayName": "nvd_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_url",
+              "displayName": "epss_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_description",
+              "displayName": "cve_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tiempo_deteccion_minutos",
+              "displayName": "tiempo_deteccion_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1104,
+        640
+      ],
+      "id": "c89f2f85-ba0d-43da-9402-b810478f6d0a",
+      "name": "Log Informativa.",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "telemetria_vulnerabilidades",
+          "mode": "list",
+          "cachedResultName": "telemetria_vulnerabilidades"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "activo_id": "={{ $('IRC Triage.').item.json.activo_id }}",
+            "cve_id": "={{ $('IRC Triage.').item.json.cve_id }}",
+            "estado": "NOTIFICADA",
+            "fecha_alerta_generada": "={{ new Date().toISOString() }}",
+            "message_id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "cve_id",
+            "activo_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_id",
+              "displayName": "cve_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "activo_id",
+              "displayName": "activo_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cvss_score",
+              "displayName": "cvss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_score",
+              "displayName": "epss_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kev_status",
+              "displayName": "kev_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "irc_score",
+              "displayName": "irc_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_publicacion_nvd",
+              "displayName": "fecha_publicacion_nvd",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_ingesta_pipeline",
+              "displayName": "fecha_ingesta_pipeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha_alerta_generada",
+              "displayName": "fecha_alerta_generada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_hitl_update",
+              "displayName": "fecha_hitl_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nvd_url",
+              "displayName": "nvd_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "epss_url",
+              "displayName": "epss_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cve_description",
+              "displayName": "cve_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tiempo_deteccion_minutos",
+              "displayName": "tiempo_deteccion_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        448
+      ],
+      "id": "72a77eaa-ff27-4f90-89ad-392b8d7e8c46",
+      "name": "Update Alert State.",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/webhooks/n8n/new-vulnerability",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"cve_id\":      \"{{ $('Calculate IRC.').item.json.cve_id }}\",\n  \"activo_id\":   \"{{ $('Calculate IRC.').item.json.activo_id }}\",\n  \"prioridad\":   \"{{ $('Calculate IRC.').item.json.prioridad }}\",\n  \"irc_score\":   \"{{ $('Calculate IRC.').item.json.irc_score }}\",\n  \"cvss_score\":  \"{{ $('Calculate IRC.').item.json.cvss_score }}\",\n  \"hostname\":    \"{{ $('Calculate IRC.').item.json.hostname }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -688,
+        448
+      ],
+      "id": "e5d93133-6d66-41c1-9338-df21f1e686df",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/webhooks/n8n/new-vulnerability",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"cve_id\":      \"{{ $('Calculate IRC.').item.json.cve_id }}\",\n  \"activo_id\":   \"{{ $('Calculate IRC.').item.json.activo_id }}\",\n  \"prioridad\":   \"{{ $('Calculate IRC.').item.json.prioridad }}\",\n  \"irc_score\":   \"{{ $('Calculate IRC.').item.json.irc_score }}\",\n  \"cvss_score\":  \"{{ $('Calculate IRC.').item.json.cvss_score }}\",\n  \"hostname\":    \"{{ $('Calculate IRC.').item.json.hostname }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        640
+      ],
+      "id": "f2d0cc27-17d4-4143-b8a0-a7ccc9149a23",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// Parse NVD Response — correlación delta-driven (R2 + R3)\n// Entrada: 1 o más ítems (páginas) de la NVD + 30 activos\n// Salida:   1 ítem por cada par CVE-activo que correlaciona\n// ============================================================\n\nconst assets = $('Fetch Assets').all().map(i => i.json);\nconst paginas = $input.all().map(i => i.json);\nconst vulnerabilities = paginas.flatMap(p => p?.vulnerabilities || []);\n\n// Marca de ingesta única para toda la corrida (R6 / T1).\n// Va acá y no en Calculate IRC: mide desde que el CVE entra.\nconst FECHA_INGESTA = new Date().toISOString();\n\n// ---------- utilidades portadas de correlacion_cascada.py ----------\n\nfunction normalizar(texto) {\n  return String(texto || '').toLowerCase().replace(/[^a-z0-9]/g, '');\n}\n\nfunction palabras(...campos) {\n  return campos.join('_').toLowerCase()\n    .split(/[_\\-.\\s]+/)\n    .filter(t => t && t !== '*')\n    .sort()\n    .join('|');\n}\n\nfunction clavesCpe(cpeString) {\n  const p = String(cpeString || '').split(':');\n  if (p.length < 2) return [];\n  let vendor, product, version;\n  if (p[1] === '2.3') {\n    if (p.length < 5) return [];\n    vendor = p[3]; product = p[4]; version = p.length > 5 ? p[5] : '*';\n  } else if (p[1].startsWith('/')) {\n    if (p.length < 4) return [];\n    vendor = p[2]; product = p[3]; version = p.length > 4 ? p[4] : '*';\n  } else {\n    return [];\n  }\n  return [palabras(vendor, product), palabras(vendor, product, version)];\n}\n\nfunction parsearCpe(cpeString) {\n  const p = String(cpeString || '').split(':');\n  if (p.length < 2) return ['', ''];\n  if (p[1] === '2.3' && p.length >= 5) return [p[3], p[4]];\n  if (p[1].startsWith('/') && p.length >= 4) return [p[2], p[3]];\n  return ['', ''];\n}\n\n// ---------- precálculo de los 30 activos ----------\n\nconst objetivos = assets.map(a => {\n  const [v, pr] = parsearCpe(a.cpe);\n  return {\n    activo_id: a.activo_id,\n    hostname: a.hostname,\n    exposicion_internet: a.exposicion_internet,\n    crit_norm: parseFloat(a.crit_norm),\n    claves: clavesCpe(a.cpe),\n    vendorNorm: normalizar(v),\n    productNorm: normalizar(pr)\n  };\n});\n\n// ---------- recorrido de los CVE ----------\n\nconst salida = [];\n\nfor (const entrada of vulnerabilities) {\n  const cve = entrada?.cve;\n  if (!cve?.id) continue;\n\n  // --- CVSS: v3.1 -> v3.0 -> v4.0 -> v2 ---\n  let baseScore = 0.0;\n  let severity = 'UNKNOWN';\n  const m = cve.metrics || {};\n  if (m.cvssMetricV31?.[0]?.cvssData?.baseScore !== undefined) {\n    baseScore = m.cvssMetricV31[0].cvssData.baseScore;\n    severity = m.cvssMetricV31[0].cvssData.baseSeverity;\n  } else if (m.cvssMetricV30?.[0]?.cvssData?.baseScore !== undefined) {\n    baseScore = m.cvssMetricV30[0].cvssData.baseScore;\n    severity = m.cvssMetricV30[0].cvssData.baseSeverity;\n  } else if (m.cvssMetricV40?.[0]?.cvssData?.baseScore !== undefined) {\n    baseScore = m.cvssMetricV40[0].cvssData.baseScore;\n    severity = m.cvssMetricV40[0].cvssData.baseSeverity;\n  } else if (m.cvssMetricV2?.[0]?.cvssData?.baseScore !== undefined) {\n    baseScore = m.cvssMetricV2[0].cvssData.baseScore;\n    severity = m.cvssMetricV2[0].baseSeverity || 'MEDIUM';\n  }\n\n  // --- KEV (R8: ya venía, no se consulta a CISA) ---\n  const isKev = Boolean(cve.cisaExploitAdd);\n\n  // --- SSVC exploitation (R7: solo se persiste, no entra al IRC) ---\n  let ssvcExploitation = null;\n  const opciones = cve.metrics?.ssvcV203?.[0]?.ssvcData?.options || [];\n  for (const o of opciones) {\n    if (o && o.exploitation !== undefined) { ssvcExploitation = o.exploitation; break; }\n  }\n\n  // --- descripción en inglés ---\n  let desc = 'Sin descripción en NVD';\n  if (Array.isArray(cve.descriptions)) {\n    const en = cve.descriptions.find(d => d.lang === 'en');\n    if (en) desc = en.value;\n  }\n\n  // --- N1: CPE del NIST (configurations). Casi siempre ausente en delta. ---\n  const clavesN1 = new Set();\n  for (const bloque of (cve.configurations || [])) {\n    for (const nodo of (bloque.nodes || [])) {\n      for (const match of (nodo.cpeMatch || [])) {\n        if (match.criteria) clavesCpe(match.criteria).forEach(k => clavesN1.add(k));\n      }\n    }\n  }\n\n  // --- N4: vendor/product en texto libre del fabricante (affected) ---\n  const textosN4 = [];\n  for (const bloque of (cve.affected || [])) {\n    for (const dato of (bloque.affectedData || [])) {\n      const v = normalizar(dato.vendor);\n      const p = normalizar(dato.product);\n      if (v && p) textosN4.push([v, p]);\n    }\n  }\n\n  // --- comparación contra cada activo ---\n  for (const obj of objetivos) {\n    let fuente = null;\n    let confianza = null;\n\n    if (obj.claves.some(k => clavesN1.has(k))) {\n      fuente = 'NVD';\n      confianza = 'FORMAL';\n    } else {\n      for (const [vTxt, pTxt] of textosN4) {\n        // Validación para prevenir falsos positivos por subcadenas muy cortas\n        if (vTxt.length < 4 || pTxt.length < 3) continue;\n        \n        const okV = obj.vendorNorm && (obj.vendorNorm.includes(vTxt) || vTxt.includes(obj.vendorNorm));\n        const okP = obj.productNorm && (obj.productNorm.includes(pTxt) || pTxt.includes(obj.productNorm));\n        if (okV && okP) { fuente = 'HEURISTICA'; confianza = 'INFERIDA'; break; }\n      }\n    }\n\n    if (!fuente) continue;\n\n    salida.push({\n      json: {\n        activo_id: obj.activo_id,\n        hostname: obj.hostname,\n        exposicion_internet: obj.exposicion_internet,\n        crit_norm: obj.crit_norm,\n\n        cve_id: cve.id,\n        cvss_score: baseScore,\n        cvss_severity: severity,\n        cisa_kev: isKev,\n        cve_description: desc,\n        fecha_publicacion: cve.published,\n\n        fecha_ingesta_pipeline: FECHA_INGESTA,\n        fecha_modificacion_nvd: cve.lastModified || null,\n        fuente_correlacion: fuente,\n        nivel_confianza: confianza,\n        ssvc_exploitation: ssvcExploitation\n      }\n    });\n  }\n}\n\nreturn salida;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        -80
+      ],
+      "id": "25d55c92-ea78-499d-b320-2f75370dbee6",
+      "name": "Parse NVD Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const paginas = $('Fetch CVEs').all().map(i => i.json);\nconst cveIngeridos = paginas[0]?.totalResults ?? 0;\nconst cveRecibidos = paginas.flatMap(p => p?.vulnerabilities || []).length;\nconst truncado = cveIngeridos > cveRecibidos;\n\nlet pares = [];\ntry {\n  pares = $('Parse NVD Response').all().map(i => i.json);\n} catch (e) {\n  pares = [];\n}\n\nconst porFuente = {\n  NVD: new Set(), CNA: new Set(), ADP: new Set(), HEURISTICA: new Set()\n};\nconst idsUnicos = new Set();\n\nfor (const p of pares) {\n  if (!p?.cve_id) continue;\n  idsUnicos.add(p.cve_id);\n  if (porFuente[p.fuente_correlacion]) porFuente[p.fuente_correlacion].add(p.cve_id);\n}\n\nconst metadata = {\n  cve_ingeridos: cveIngeridos,\n  correlacionados: idsUnicos.size,\n  pares: pares.length,\n  n1: porFuente.NVD.size,\n  n2: porFuente.CNA.size,\n  n3: porFuente.ADP.size,\n  n4: porFuente.HEURISTICA.size,\n  ids: Array.from(idsUnicos).sort(),\n  recibidos: cveRecibidos,\n  truncado: truncado,\n  paginas_recibidas: paginas.length\n};\n\nreturn [{\n  json: {\n    entidad_id: Number($execution.id) || 0,\n    metadata_str: JSON.stringify(metadata)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        80
+      ],
+      "id": "1a4b599e-41cb-4b29-97c4-cc595c8250e5",
+      "name": "Contar Corrida"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.auditoria_acciones\n    (accion, tipo_entidad, entidad_id, metadata_json)\nVALUES\n    ('INGESTA_DELTA', 'EJECUCION', {{ $json.entidad_id }}, '{{ $json.metadata_str }}');",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1552,
+        80
+      ],
+      "id": "fc14eb8e-048a-4431-abe9-e147d41ce002",
+      "name": "Log Auditoria",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "pubStartDate",
+              "value": "={{ $now.minus({days: 2}).toFormat(\"yyyy-MM-dd'T'00:00:00.000\") }}"
+            },
+            {
+              "name": "pubEndDate",
+              "value": "={{ $now.toFormat(\"yyyy-MM-dd'T'23:59:59.999\") }}"
+            },
+            {
+              "name": "resultsPerPage",
+              "value": "2000"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "PoC_Tesis_SecOps/1.0 (investigacion@utn.edu.ar)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {
+            "pagination": {
+              "parameters": {
+                "parameters": [
+                  {
+                    "name": "startIndex",
+                    "value": "={{ $pageCount * 2000 }}"
+                  }
+                ]
+              },
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ $response.body.startIndex + $response.body.resultsPerPage >= $response.body.totalResults }}",
+              "limitPagesFetched": true,
+              "maxRequests": 5,
+              "requestInterval": 6000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1968,
+        -80
+      ],
+      "id": "cd507a34-c5c5-4e91-92b1-b716cbd85015",
+      "name": "Fetch CVEs",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "executeOnce": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xaqr3XFC4nLuLXa5",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE telemetria_vulnerabilidades\nSET fuente_correlacion_final  = '{{ $('Calculate IRC').item.json.fuente_correlacion }}',\n    fecha_enriquecimiento_nvd = NULLIF('{{ $('Calculate IRC').item.json.fecha_modificacion_nvd }}', '')::timestamp,\n    fecha_promocion_detectada = LOCALTIMESTAMP\nWHERE cve_id    = '{{ $('Calculate IRC').item.json.cve_id }}'\n  AND activo_id = {{ $('Calculate IRC').item.json.activo_id }}\n  AND fuente_correlacion = 'HEURISTICA'\n  AND '{{ $('Calculate IRC').item.json.fuente_correlacion }}' <> 'HEURISTICA'\n  AND fuente_correlacion_final IS NULL\nRETURNING cve_id, activo_id, fuente_correlacion, fuente_correlacion_final, fecha_publicacion_nvd, fecha_enriquecimiento_nvd;",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -480,
+        -16
+      ],
+      "id": "49616f26-a59c-4362-b9ff-392dd66b74c6",
+      "name": "Register Promotion",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "fce2393c-4ef8-4e77-907b-a3ab25379e2c",
+              "leftValue": "={{ $json.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -720,
+        -80
+      ],
+      "id": "b372bdc1-b1bb-419c-b85a-5dd2fd298d07",
+      "name": "Is this CVE new?"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Assets": {
+      "main": [
+        [
+          {
+            "node": "Fetch CVEs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch EPSS Score": {
+      "main": [
+        [
+          {
+            "node": "Merge EPSS Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge EPSS Context": {
+      "main": [
+        [
+          {
+            "node": "Calculate IRC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate IRC": {
+      "main": [
+        [
+          {
+            "node": "Check Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Telemetria": {
+      "main": [
+        [
+          {
+            "node": "IRC Triage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IRC Triage": {
+      "main": [
+        [
+          {
+            "node": "Send Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Informativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Alert": {
+      "main": [
+        [
+          {
+            "node": "Update Alert State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existence": {
+      "main": [
+        [
+          {
+            "node": "Is this CVE new?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Asset DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Asset DB": {
+      "main": [
+        [
+          {
+            "node": "Query NVD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query NVD": {
+      "main": [
+        [
+          {
+            "node": "Fetch EPSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch EPSS": {
+      "main": [
+        [
+          {
+            "node": "Calculate IRC.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate IRC.": {
+      "main": [
+        [
+          {
+            "node": "IRC Triage.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IRC Triage.": {
+      "main": [
+        [
+          {
+            "node": "Send Alert.",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Informativa.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Alert.": {
+      "main": [
+        [
+          {
+            "node": "Update Alert State.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Alert State.": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Informativa.": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse NVD Response": {
+      "main": [
+        [
+          {
+            "node": "Fetch EPSS Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contar Corrida": {
+      "main": [
+        [
+          {
+            "node": "Log Auditoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch CVEs": {
+      "main": [
+        [
+          {
+            "node": "Contar Corrida",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Parse NVD Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is this CVE new?": {
+      "main": [
+        [
+          {
+            "node": "Upsert Telemetria",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Register Promotion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "40342539-cd5b-43f5-b394-b9f10b2215de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4477764aeab00f618b177264f5387b5d55b5cd9f19d70dc86921dc0d73088939"
+  },
+  "nodeGroups": [],
+  "id": "IwqurEnACyaT2gd9",
+  "tags": []
+}

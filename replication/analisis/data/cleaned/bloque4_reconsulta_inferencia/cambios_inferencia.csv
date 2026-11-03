@@ -1,0 +1,6 @@
+cve_id,hostname,cambio
+CVE-2026-80075,srv-ad-01,ganada
+CVE-2026-80075,srv-ad-02,ganada
+CVE-2026-80075,srv-fs-01,ganada
+CVE-2026-80075,srv-fs-02,ganada
+CVE-2026-80075,srv-print-01,ganada

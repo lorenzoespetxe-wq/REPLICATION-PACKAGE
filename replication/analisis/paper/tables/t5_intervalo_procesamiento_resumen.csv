@@ -1,0 +1,4 @@
+grupo,corridas,pares,segundos_min,segundos_mediana,segundos_p90,segundos_max,mediana_de_medianas_por_corrida,se_reporta
+posterior_al_control_de_ritmo,9,3795,1.2,471.8,472.6,523.8,5.6,si
+previa_al_control_de_ritmo,3,46,1.1,1.8,1.9,1.9,1.7,no (no comparable)
+excluida_reparada_a_mano,1,7,1586.8,1586.8,1586.8,1586.8,1586.8,no

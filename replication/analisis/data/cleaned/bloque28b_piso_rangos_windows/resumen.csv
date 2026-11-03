@@ -1,0 +1,4 @@
+producto_inventario,empieza_en_la_primera,casos
+microsoft:windows_server_2016,True,13
+microsoft:windows_server_2019,True,15
+microsoft:windows_server_2022,True,15

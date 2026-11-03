@@ -1,0 +1,3 @@
+regla,vulnerabilidades_formales_hoy,detectadas,cobertura_vuln_pct,pares_formales_hoy,pares_persistidos,cobertura_pares_pct
+artefacto,1009,955,94.6,5998,3780,63.0
+vulnerable,924,914,98.9,5810,3698,63.6

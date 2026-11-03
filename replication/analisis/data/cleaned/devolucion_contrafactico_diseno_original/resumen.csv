@@ -1,0 +1,25 @@
+medida,valor
+pares con configuracion publicada dentro de la ventana,656
+vulnerabilidades con configuracion publicada dentro de la ventana,181
+pares que el diseno original habria detectado,470
+vulnerabilidades que el diseno original habria detectado,87
+pares afectados al cierre,5810
+vulnerabilidades afectadas al cierre,924
+pares detectados que ademas estan afectados al cierre,470
+vulnerabilidades afectadas al cierre con algun par detectado,87
+corridas de la campana,28
+corridas sin resultados para ningun activo,24
+activos con resultado por corrida (maximo),9
+activos con resultado por corrida (mediana),0.0
+ventana de 3 dias: pares,828
+ventana de 3 dias: vulnerabilidades,141
+ventana de 3 dias: mediana de dias hasta detectar,1.8
+ventana de 7 dias: pares,1582
+ventana de 7 dias: vulnerabilidades,246
+ventana de 7 dias: mediana de dias hasta detectar,2.8
+ventana de 20 dias: pares,4907
+ventana de 20 dias: vulnerabilidades,675
+ventana de 20 dias: mediana de dias hasta detectar,8.1
+ventana de 30 dias: pares,5435
+ventana de 30 dias: vulnerabilidades,737
+ventana de 30 dias: mediana de dias hasta detectar,9.0

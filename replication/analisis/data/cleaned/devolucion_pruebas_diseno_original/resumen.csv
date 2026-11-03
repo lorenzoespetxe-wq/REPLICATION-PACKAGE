@@ -1,0 +1,4 @@
+ejecucion,fecha,parametros,activos,activos_vacios,activos_microsoft,microsoft_vacios,pares_devueltos
+1,2026-08-10,"{""cpeName"": ""={{ $json.cpe }}"", ""pubStartDate"": ""={{ $now.minus({days: 90}).toFormat(\""yyyy-MM-dd'T'00:00:00.000\"") }}"", ""pubEndDate"": ""={{ $now.toFormat(\""yyyy-MM-dd'T'23:59:59.999\"") }}""}",30,18,10,10,158
+2,2026-08-11,"{""cpeName"": ""={{ $json.cpe }}"", ""pubStartDate"": ""={{ $now.minus({days: 100}).toFormat(\""yyyy-MM-dd'T'00:00:00.000\"") }}"", ""pubEndDate"": ""={{ $now.toFormat(\""yyyy-MM-dd'T'23:59:59.999\"") }}""}",30,18,10,10,182
+3,2026-08-22,"{""cpeName"": ""={{ $json.cpe }}"", ""pubStartDate"": ""={{ $now.minus({days: 100}).toFormat(\""yyyy-MM-dd'T'00:00:00.000\"") }}"", ""pubEndDate"": ""={{ $now.toFormat(\""yyyy-MM-dd'T'23:59:59.999\"") }}""}",30,8,10,0,5487

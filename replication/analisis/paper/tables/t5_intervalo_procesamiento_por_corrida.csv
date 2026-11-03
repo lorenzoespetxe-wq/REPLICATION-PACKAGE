@@ -1,0 +1,14 @@
+ingesta_utc,dia_local,pares,segundos_min,segundos_mediana,segundos_max,grupo
+2026-09-01 17:53:40,2026-09-01,1,1.1,1.1,1.1,previa_al_control_de_ritmo
+2026-09-02 17:00:31,2026-09-02,37,1.8,1.8,1.9,previa_al_control_de_ritmo
+2026-09-04 01:02:32,2026-09-03,7,1586.8,1586.8,1586.8,excluida_reparada_a_mano
+2026-09-07 17:48:13,2026-09-07,8,1.7,1.7,1.7,previa_al_control_de_ritmo
+2026-09-09 21:17:55,2026-09-09,3195,470.9,471.9,472.8,posterior_al_control_de_ritmo
+2026-09-10 17:00:39,2026-09-10,102,523.7,523.8,523.8,posterior_al_control_de_ritmo
+2026-09-11 17:00:33,2026-09-11,2,2.6,2.6,2.6,posterior_al_control_de_ritmo
+2026-09-13 17:00:27,2026-09-13,2,3.4,3.4,3.4,posterior_al_control_de_ritmo
+2026-09-15 17:00:33,2026-09-15,444,89.7,89.9,90.1,posterior_al_control_de_ritmo
+2026-09-16 17:00:55,2026-09-16,37,77.8,77.9,77.9,posterior_al_control_de_ritmo
+2026-09-17 17:09:08,2026-09-17,2,5.6,5.6,5.7,posterior_al_control_de_ritmo
+2026-09-20 17:00:26,2026-09-20,4,1.2,1.2,1.2,posterior_al_control_de_ritmo
+2026-09-24 17:00:35,2026-09-24,7,1.6,1.6,1.6,posterior_al_control_de_ritmo

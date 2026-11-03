@@ -1,0 +1,8 @@
+id,cve_id,activo_id,dia_local,ingesta_utc,cierre_utc,segundos,motivo
+74,CVE-2026-20274,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+75,CVE-2026-20275,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+76,CVE-2026-20276,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+77,CVE-2026-20277,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+78,CVE-2026-20278,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+79,CVE-2026-20279,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)
+80,CVE-2026-20280,3,2026-09-03,2026-09-04 01:02:32,2026-09-04 01:28:59,1586.8,corrida reparada nodo por nodo el 3/09 (el intervalo mide la reparacion)

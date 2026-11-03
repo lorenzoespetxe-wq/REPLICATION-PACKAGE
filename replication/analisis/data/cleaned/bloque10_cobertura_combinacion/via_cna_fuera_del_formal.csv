@@ -1,0 +1,9 @@
+medida,valor
+pares de la via de la CNA,5368
+vulnerabilidades de la via de la CNA,690
+pares de la CNA fuera de la coincidencia formal al cierre,14
+vulnerabilidades de la CNA fuera de la coincidencia formal al cierre,2
+"  de esos pares, persistidos por el artefacto",5
+pares de la CNA fuera de lo declarado afectado al cierre,14
+pares de la CNA no persistidos por el artefacto,2121
+"  de ellos, declarados afectados por la NVD al cierre",2112

@@ -1,0 +1,15 @@
+medida,valor
+pares,3883
+pares_sobre_umbral,17
+notificados,17
+notificados_con_message_id,17
+message_id_distintos,17
+vulnerabilidades_notificadas,9
+corridas_con_correo,3
+irc_max_no_notificado,0.3319
+irc_max_no_notificado_par,CVE-2026-84732 srv-vpn-gw
+irc_min_notificado,0.4235
+irc_min_notificado_par,CVE-2026-20277 fw-edge-01
+escenario_max_no_notificado,0.3975
+escenario_max_no_notificado_par,CVE-2026-84732 srv-vpn-gw
+escenario_no_notificados_sobre_umbral,0

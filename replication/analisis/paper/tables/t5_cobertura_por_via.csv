@@ -1,0 +1,5 @@
+momento,via,vulnerabilidades,pares
+deteccion,formal (NVD),91,439
+deteccion,inferencia,935,3409
+deteccion,cualquiera (union),1018,3848
+cierre,inferencia con confirmacion formal posterior,98,217

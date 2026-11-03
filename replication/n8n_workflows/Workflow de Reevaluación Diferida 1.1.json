@@ -1,0 +1,348 @@
+{
+  "name": "Fase 5 - Reevaluacion Diferida",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        96,
+        496
+      ],
+      "id": "c2be15ce-ea59-4ba2-b2cc-a2cc10f08d3b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT cve_id\nFROM telemetria_vulnerabilidades\nORDER BY cve_id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        304,
+        496
+      ],
+      "id": "5dc9d8d9-29c2-4850-aa07-7e154946bb1a",
+      "name": "Listar CVE para Serie EPSS",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.first.org/data/v1/epss",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cve",
+              "value": "={{ $json.cve_id }}"
+            },
+            {
+              "name": "scope",
+              "value": "time-series"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        496
+      ],
+      "id": "0b0afde7-cd0e-48bd-af35-cd7ecdc9d7f2",
+      "name": "Consultar EPSS Time-Series"
+    },
+    {
+      "parameters": {
+        "jsCode": "const filas = [];\n\nfor (const item of $input.all()) {\n  const registro = item.json.data?.[0];\n  if (!registro) continue;\n\n  const cve = registro.cve;\n\n  // El dia de la corrida viene en la raiz del registro, no dentro de time-series.\n  // Omitirlo perderia un dia por CVE en cada captura.\n  filas.push({\n    cve_id: cve,\n    fecha: registro.date,\n    epss_score: parseFloat(registro.epss),\n    epss_percentil: parseFloat(registro.percentile)\n  });\n\n  for (const dia of registro['time-series'] ?? []) {\n    filas.push({\n      cve_id: cve,\n      fecha: dia.date,\n      epss_score: parseFloat(dia.epss),\n      epss_percentil: parseFloat(dia.percentile)\n    });\n  }\n}\n\nreturn filas.map(f => ({ json: f }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        496
+      ],
+      "id": "8c7c7d42-12c3-46f1-bf98-619e62f04194",
+      "name": "Aplanar Serie EPSS"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO epss_serie_diaria (cve_id, fecha, epss_score, epss_percentil)\nVALUES ($1, $2::date, $3::numeric, $4::numeric)\nON CONFLICT (cve_id, fecha) DO NOTHING;",
+        "options": {
+          "queryReplacement": "={{ $json.cve_id }}, {{ $json.fecha }}, {{ $json.epss_score }}, {{ $json.epss_percentil }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        928,
+        496
+      ],
+      "id": "90affba6-9711-4214-b1bc-e2e9bde8ade5",
+      "name": "Persistir Serie EPSS",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT cve_id\nFROM telemetria_vulnerabilidades\nORDER BY cve_id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        304,
+        688
+      ],
+      "id": "191a5ee8-c300-47c8-aabe-155db8b9312b",
+      "name": "Listar CVE para Recalculo",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cveId",
+              "value": "={{ $json.cve_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "PoC_Tesis_SecOps/1.0 (investigacion@utn.edu.ar)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        688
+      ],
+      "id": "276324e0-6edd-4579-8e8b-15113d05cd48",
+      "name": "Consultar NVD al Cierre",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xaqr3XFC4nLuLXa5",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const filas = [];\n\nfor (const item of $input.all()) {\n  const vuln = item.json.vulnerabilities?.[0]?.cve;\n  if (!vuln) continue;\n\n  const m = vuln.metrics ?? {};\n\n  // Misma cascada que el flujo congelado (nodo Parse NVD Response): V31, V30,\n  // V40 y V2, en ese orden, y cero como respaldo final. Primer elemento del\n  // arreglo, sin preferir la fuente Primary. Si una punta usara una cascada\n  // distinta de la otra, la diferencia contra irc_score mezclaria maduracion\n  // del dato con cambio de criterio de medicion.\n  const cvss = m.cvssMetricV31?.[0]?.cvssData?.baseScore\n            ?? m.cvssMetricV30?.[0]?.cvssData?.baseScore\n            ?? m.cvssMetricV40?.[0]?.cvssData?.baseScore\n            ?? m.cvssMetricV2?.[0]?.cvssData?.baseScore\n            ?? 0;\n\n  // SSVC y la fecha de ingreso al catalogo KEV siguen admitiendo null: son\n  // texto y fecha, no entran al calculo del IRC, y ahi el nulo es correcto.\n  const opciones = m.ssvcV203?.[0]?.ssvcData?.options ?? [];\n  const ssvc = opciones.find(o => 'exploitation' in o)?.exploitation ?? null;\n\n  filas.push({\n    cve_id:                  vuln.id,\n    cvss_score_final:        cvss,\n    ssvc_exploitation_final: ssvc,\n    kev_status_final:        Boolean(vuln.cisaExploitAdd),\n    kev_fecha_agregado:      vuln.cisaExploitAdd ? vuln.cisaExploitAdd.slice(0, 10) : null\n  });\n}\n\nreturn filas.map(f => ({ json: f }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        688
+      ],
+      "id": "aba18661-511e-41c8-b113-ae8a61b4bfd7",
+      "name": "Extraer CVSS SSVC y KEV"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE telemetria_vulnerabilidades\nSET cvss_score_final          = NULLIF(NULLIF($2, ''), 'null')::numeric,\n    ssvc_exploitation_final   = NULLIF(NULLIF($3, ''), 'null'),\n    kev_status_final          = $4::boolean,\n    kev_fecha_agregado        = NULLIF(NULLIF($5, ''), 'null')::date,\n    fecha_actualizacion_datos = (now() AT TIME ZONE 'UTC')\nWHERE cve_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $json.cve_id }}, {{ $json.cvss_score_final }}, {{ $json.ssvc_exploitation_final }}, {{ $json.kev_status_final }}, {{ $json.kev_fecha_agregado }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        928,
+        688
+      ],
+      "id": "542e3732-74a2-4544-8acb-590d635353d8",
+      "name": "Persistir Datos Maduros",
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE telemetria_vulnerabilidades t\nSET epss_score_final = COALESCE(\n        (SELECT ROUND(e.epss_score, 4)\n         FROM epss_serie_diaria e\n         WHERE e.cve_id = t.cve_id\n         ORDER BY e.fecha DESC\n         LIMIT 1)\n    , 0),\n    irc_score_final  = ROUND(\n        (0.15 * (COALESCE(t.cvss_score_final, 0) / 10.0)) +\n        (0.25 * COALESCE(\n            (SELECT e.epss_score\n             FROM epss_serie_diaria e\n             WHERE e.cve_id = t.cve_id\n             ORDER BY e.fecha DESC\n             LIMIT 1)\n        , 0)) +\n        (0.30 * CASE WHEN t.kev_status_final THEN 1.0 ELSE 0.0 END) +\n        (0.20 * cn.peso_normalizacion) +\n        (0.10 * CASE WHEN a.exposicion_internet THEN 1.0 ELSE 0.0 END)\n    , 4)\nFROM activos a\n     JOIN criticidad_niveles cn ON a.criticidad_id = cn.id\nWHERE t.activo_id = a.id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1120,
+        688
+      ],
+      "id": "a2f5df56-4213-48d6-a8d3-7b32d845a1b0",
+      "name": "Recalcular IRC Final",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "xrlwoNUs6R0ZK6WU",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Listar CVE para Serie EPSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Listar CVE para Recalculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar CVE para Serie EPSS": {
+      "main": [
+        [
+          {
+            "node": "Consultar EPSS Time-Series",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar EPSS Time-Series": {
+      "main": [
+        [
+          {
+            "node": "Aplanar Serie EPSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplanar Serie EPSS": {
+      "main": [
+        [
+          {
+            "node": "Persistir Serie EPSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar CVE para Recalculo": {
+      "main": [
+        [
+          {
+            "node": "Consultar NVD al Cierre",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar NVD al Cierre": {
+      "main": [
+        [
+          {
+            "node": "Extraer CVSS SSVC y KEV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer CVSS SSVC y KEV": {
+      "main": [
+        [
+          {
+            "node": "Persistir Datos Maduros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persistir Datos Maduros": {
+      "main": [
+        [
+          {
+            "node": "Recalcular IRC Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c386e9a6-2a5d-4b9c-9897-0b8d9e30e799",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4477764aeab00f618b177264f5387b5d55b5cd9f19d70dc86921dc0d73088939"
+  },
+  "nodeGroups": [],
+  "id": "CMK2hnm3zSSL3GRy",
+  "tags": []
+}

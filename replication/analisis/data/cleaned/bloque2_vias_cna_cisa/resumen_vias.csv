@@ -1,0 +1,16 @@
+medida,unidad,valor
+vulnerabilidades ingeridas por el flujo,vulnerabilidades distintas,14456
+  presentes en el corpus descargado,vulnerabilidades distintas,14456
+"  no medidas (fuera del corpus, identificador anterior a 2026)",vulnerabilidades distintas,0
+registros medidos en estado PUBLISHED,vulnerabilidades distintas,14319
+registros medidos en estado REJECTED,vulnerabilidades distintas,137
+registros donde la CNA declara al menos un CPE,vulnerabilidades distintas,6937
+via CNA: vulnerabilidades que correlacionan con algun activo,vulnerabilidades distintas,690
+via CNA: pares vulnerabilidad-activo,pares,5368
+via CNA: pares que el artefacto tambien persistio,pares,3247
+via CNA: pares que el artefacto no persistio,pares,2121
+pares persistidos por el artefacto (referencia),pares,3883
+vulnerabilidades persistidas por el artefacto (referencia),vulnerabilidades distintas,1040
+via CISA: bloques de CISA-ADP presentes,bloques de CISA,11661
+via CISA: bloques de CISA-ADP con productos afectados o CPE,bloques de CISA,0
+"otros publicadores autorizados (ADP) con CPE, no CISA",bloques de otros ADP,1

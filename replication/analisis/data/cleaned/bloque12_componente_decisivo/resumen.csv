@@ -1,0 +1,23 @@
+medida,unidad,valor
+pares notificados,pares,17
+notificaciones en que es necesario: severidad,pares,12
+notificaciones en que es necesario: probabilidad,pares,0
+notificaciones en que es necesario: explotacion,pares,10
+notificaciones en que es necesario: criticidad,pares,7
+notificaciones en que es necesario: exposicion,pares,7
+notificaciones sin explotacion confirmada,pares,7
+notificaciones con explotacion confirmada,pares,10
+aporte maximo de la probabilidad de explotacion en un par notificado,indice,0.0029
+pares del contraste,pares,3883
+indice medio al detectar,indice,0.2018
+aporte al indice medio: severidad,porcentaje,49.0
+aporte al indice medio: probabilidad,porcentaje,0.5
+aporte al indice medio: explotacion,porcentaje,0.4
+aporte al indice medio: criticidad,porcentaje,49.8
+aporte al indice medio: exposicion,porcentaje,0.3
+activos del inventario,activos,30
+activos que pueden notificar por severidad sin explotacion (minimo < 10),activos,1
+"activos que solo notifican sin explotacion con severidad 10,0 (minimo = 10)",activos,2
+con explotacion confirmada: activos que notifican con cualquier severidad,activos,22
+con explotacion confirmada: severidad minima en los demas activos,puntaje,3.33
+activos que no pueden notificar por severidad sin explotacion (minimo > 10),activos,27
